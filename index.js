@@ -25,6 +25,7 @@ import getJob from "./src/requests/get/machine/job.js";
 
 const app = express();
 import cors from 'cors';
+import pause from "./src/requests/post/machine/pause.js";
 
 app.use(cors());
 app.use(express.json());
@@ -148,6 +149,24 @@ app.post('/api/run', async (req, res) => {
     }
 
 });
+
+app.post('/api/pause', async (req, res) => {
+
+    const dept = req.body.dept;
+    const resource = req.body.resource;
+
+    const result = await pause(dept, resource);
+
+    if(result.error) {
+        res.json(newMessage("An Error occured " + result.error, false, true));
+    }
+    else {
+        const message = `Successfully paused ${dept} ${resource}`;
+        res.json(newMessage(message));
+    }
+
+});
+
 
 app.post('/api/run', async (req, res) => {
 

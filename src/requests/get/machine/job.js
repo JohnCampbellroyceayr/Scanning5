@@ -137,28 +137,6 @@ function getGroup(departmentWithPlantCode, res) {
     });
 }
 
-function jobExists(job) {
-    const query = `
-        SELECT TRIM(EDJOB#) AS "Job" FROM CJOBDR WHERE TRIM(EDJOB#) = ? LIMIT 1
-    `;
-    return new Promise(async (resolve, reject) => {
-        ODBC.query(query, [job], async (error, result) => {
-            if(error) {
-                console.log(error);
-                resolve(false);
-            }
-            else {
-                if(result.length > 0) {
-                    resolve(true);
-                }
-                else {
-                    resolve(false);
-                }
-            }
-        });
-    });
-}
-
 const noGroupQuery = `
     SELECT 
         TRIM(CJOBDR.EDJOB#) AS "Job",
