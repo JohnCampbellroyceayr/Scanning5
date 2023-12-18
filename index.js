@@ -11,6 +11,8 @@ import express from "express";
 // import endShift from "./src/requests/post/operations/machineEndShift.js";
 
 import setMachine from "./src/requests/post/machine/setMachine.js";
+import setup from "./src/requests/post/machine/setup.js";
+import run from "./src/requests/post/machine/run.js";
 
 import getName from "./src/requests/get/user/userExists.js";
 import activateUser from "./src/requests/post/user/userActivate.js";
@@ -18,6 +20,8 @@ import activateUser from "./src/requests/post/user/userActivate.js";
 import newMessage from "./src/user/messages/message.js";
 
 import machineExists from "./src/requests/get/machine/machineExists.js";
+
+import getJob from "./src/requests/get/machine/job.js";
 
 const app = express();
 import cors from 'cors';
@@ -90,6 +94,78 @@ app.post('/api/setMachine', async (req, res) => {
             res.json(newMessage(message));
         }
     }
+});
+
+app.post('/api/checkJob', async (req, res) => {
+    const dept = req.body.dept;
+    const resource = req.body.resource;
+    const job = req.body.job;
+
+    const jobValues = await getJob(dept, resource, job);
+
+    if(jobValues == undefined) {
+        res.json(newMessage(`Unable to find job ${job} for resource ${dept} ${resource}`, false));
+    }
+    else {
+        res.json(newMessage(`Do you want to add Work Order ${job}, Sequence ${jobValues["Sequence"]}, Part Number ${jobValues["PartNumber"]}`, true, false, jobValues));
+    }
+});
+
+app.post('/api/setup', async (req, res) => {
+
+    const employee = req.body.employee;
+    const dept = req.body.dept;
+    const resource = req.body.resource;
+    const jobs = req.body.jobs;
+
+    const result = await setup(employee, dept, resource, jobs);
+
+    if(result.error) {
+        res.json(newMessage("An Error occured " + result.error, false, true));
+    }
+    else {
+        const message = `Successfully setup work orders on ${dept} ${resource}`;
+        res.json(newMessage(message));
+    }
+
+});
+
+app.post('/api/run', async (req, res) => {
+
+    const employee = req.body.employee;
+    const dept = req.body.dept;
+    const resource = req.body.resource;
+    const jobs = req.body.jobs;
+
+    const result = await run(employee, dept, resource, jobs);
+
+    if(result.error) {
+        res.json(newMessage("An Error occured " + result.error, false, true));
+    }
+    else {
+        const message = `Successfully ran work orders on ${dept} ${resource}`;
+        res.json(newMessage(message));
+    }
+
+});
+
+app.post('/api/run', async (req, res) => {
+
+    const employee = req.body.employee;
+    const dept = req.body.dept;
+    const resource = req.body.resource;
+    const jobs = req.body.jobs;
+
+    const result = await setup(employee, dept, resource, jobs);
+
+    if(result.error) {
+        res.json(newMessage("An Error occured " + result.error, false, true));
+    }
+    else {
+        const message = `Successfully setup work orders on ${dept} ${resource}`;
+        res.json(newMessage(message));
+    }
+
 });
 
 app.listen(2002, () => {

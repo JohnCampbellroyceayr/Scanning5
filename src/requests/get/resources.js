@@ -1,6 +1,5 @@
 import connectODBC from "../../databases/odbc.js";
 
-
 const ODBC = await connectODBC();
 
 export async function getMachinesIndex(index, limit) {

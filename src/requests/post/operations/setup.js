@@ -4,7 +4,6 @@ var parser = new xml2js.Parser();
 
 export default function setup(deviceID, departmentCode, resourceCode, workOrder, seqNumber) {
     return new Promise((resolve, reject) => {
-        
         const args = {
             "Service_ReportProdSetScheduleToSetupJob": {
                 "RequestID": "Setup",
