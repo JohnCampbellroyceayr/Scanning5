@@ -14,6 +14,12 @@ import setMachine from "./src/requests/post/machine/setMachine.js";
 import setup from "./src/requests/post/machine/setup.js";
 import run from "./src/requests/post/machine/run.js";
 
+import pause from "./src/requests/post/machine/pause.js";
+import resume from "./src/requests/post/machine/resume.js";
+
+import goodPieces from "./src/requests/post/machine/reportGood.js";
+import scrapPieces from "./src/requests/post/machine/reportScrap.js";
+
 import getName from "./src/requests/get/user/userExists.js";
 import activateUser from "./src/requests/post/user/userActivate.js";
 
@@ -23,9 +29,13 @@ import machineExists from "./src/requests/get/machine/machineExists.js";
 
 import getJob from "./src/requests/get/machine/job.js";
 
+
+
 const app = express();
 import cors from 'cors';
-import pause from "./src/requests/post/machine/pause.js";
+
+
+
 
 app.use(cors());
 app.use(express.json());
@@ -167,25 +177,65 @@ app.post('/api/pause', async (req, res) => {
 
 });
 
+app.post('/api/resume', async (req, res) => {
 
-app.post('/api/run', async (req, res) => {
-
-    const employee = req.body.employee;
     const dept = req.body.dept;
     const resource = req.body.resource;
-    const jobs = req.body.jobs;
 
-    const result = await setup(employee, dept, resource, jobs);
+    const result = await resume(dept, resource);
 
     if(result.error) {
         res.json(newMessage("An Error occured " + result.error, false, true));
     }
     else {
-        const message = `Successfully setup work orders on ${dept} ${resource}`;
+        const message = `Successfully resumed ${dept} ${resource}`;
         res.json(newMessage(message));
     }
 
 });
+
+
+app.post('/api/goodPieces', async (req, res) => {
+
+    const employee = req.body.employee;
+    const dept = req.body.dept;
+    const resource = req.body.resource;
+    const jobs = req.body.jobs;
+    const quantities = req.body.quantities;
+
+    const result = await goodPieces(employee, dept, resource, jobs, quantities);
+
+    if(result.error) {
+        res.json(newMessage("An Error occured " + result.error, false, true));
+    }
+    else {
+        const message = `Successfully scanned work orders on ${dept} ${resource}`;
+        res.json(newMessage(message));
+    }
+
+});
+
+app.post('/api/scrapPieces', async (req, res) => {
+
+    const employee = req.body.employee;
+    const dept = req.body.dept;
+    const resource = req.body.resource;
+    const job = req.body.job;
+    const quantity = req.body.quantity;
+    const code = req.body.code;
+    
+    const result = await scrapPieces(employee, dept, resource, job, quantity, code);
+
+    if(result.error) {
+        res.json(newMessage("An Error occured " + result.error, false, true));
+    }
+    else {
+        const message = `Successfully scrapped work orders on ${dept} ${resource}`;
+        res.json(newMessage(message));
+    }
+
+});
+
 
 app.listen(2002, () => {
     console.log('Server is running on port 2002');

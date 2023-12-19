@@ -53,6 +53,32 @@ export function machineStatus(dept, res) {
     })
 }
 
+export function machineMode(dept, res) {
+    const deptWithPlantCode = "DFT" + dept;
+    const query = `
+        SELECT
+            J9MODE AS "mode"
+        FROM RACT
+        WHERE
+            TRIM(J9DEPT) = ? AND TRIM(J9RESC) = ?
+    `;
+    return new Promise((resolve, reject) => {
+        ODBC.query(query, [deptWithPlantCode, res], (error, result) => {
+            if(error) {
+                resolve("I");
+            }
+            else {
+                if(result.length > 0) {
+                    resolve(result[0]["mode"]);
+                }
+                else {
+                    resolve("I");
+                }
+            }
+        });
+    })
+}
+
 export async function machineExistsOnDatabase(dept, res) {
 
     const query = `

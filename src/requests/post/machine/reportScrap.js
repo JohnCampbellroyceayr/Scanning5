@@ -1,0 +1,35 @@
+import startShift from "../operations/machineStartShift.js";
+import setMachineEmpLogin from "./setMachine.js";
+import scanRun from "../operations/run.js";
+import reportScrap from "../operations/scrap.js";
+
+import { machineDeviceId, machineStatus, machineExistsOnDatabase } from "./getMachineValues.js";
+
+export default async function scrapPieces(employee, dept, resource, job, quantity, code) {
+
+    const status = await machineStatus(dept, resource);
+    const deviceId = await machineDeviceId(dept, resource);
+
+    if(deviceId == null) {
+        return {
+            error: "Device Id doesn't exist"
+        }
+    }
+
+    try {
+        if(status === "I") {
+            await startShift(deviceId, dept, resource);
+        }
+        await scanRun(deviceId, dept, resource, job["Job"], job["Sequence"]);
+        await reportScrap(deviceId, dept, resource, job["Job"], job["Sequence"], employee, quantity, code);
+        return true;
+    }
+    catch(err) {
+        console.log(err);
+        if(err.error.includes("0024") && err.error.includes("Labour list must be entered") && setMachine === false) {
+            await setMachineEmpLogin(dept, resource, employee);
+            return scrapPieces(employee, dept, resource, job, quantity, code)
+        }
+        return err;
+    }
+}
