@@ -24,6 +24,9 @@ import getMulitiJobMachine from "./src/requests/get/machine/machineMultiJob.js";
 import validParams from "./src/user/validation/validation.js";
 import newMessage from "./src/user/messages/message.js";
 
+import getMachineJobs from "./src/requests/get/machine/getMachineJobs.js";
+import getCurrectJob from "./src/requests/get/machine/currentJob.js";
+
 const app = express();
 import cors from 'cors';
 
@@ -102,6 +105,33 @@ app.post('/api/checkJob', async (req, res) => {
     else {
         res.json(newMessage(`Do you want to add Work Order ${job}, Sequence ${jobValues["Sequence"]}, Part Number ${jobValues["PartNumber"]}`, true, false, jobValues));
     }
+});
+
+app.post('/api/checkCurrentJob', async (req, res) => {
+
+    if(!validParams(req.body, "checkCurrentJob")) { res.json(newMessage("Invalid Params", false, true)); return ; }
+
+    const dept = req.body.dept;
+    const resource = req.body.resource;
+    const job = req.body.job;
+    const seq = req.body.seq;
+
+    const jobValues = await getCurrectJob(dept, resource, job, seq);
+
+    res.json(jobValues);
+});
+
+
+app.post('/api/getMachineJobs', async (req, res) => {
+
+    if(!validParams(req.body, "getMachineJobs")) { res.json(newMessage("Invalid Params", false, true)); return ; }
+
+    const dept = req.body.dept;
+    const resource = req.body.resource;
+
+    const jobs = await getMachineJobs(dept, resource);
+
+    res.json(jobs);
 });
 
 app.post('/api/setup', async (req, res) => {

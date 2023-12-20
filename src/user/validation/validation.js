@@ -6,6 +6,10 @@ export default function validParams(reqBody, type) {
             return checkParams(reqBody, ["dept", "resource", "employee"]);
         case "checkJob":
             return checkParams(reqBody, ["dept", "resource", "job"]);
+        case "checkCurrentJob":
+            return checkParams(reqBody, ["dept", "resource", "job", "seq"]);
+        case "getMachineJobs":
+            return checkParams(reqBody, ["dept", "resource"]);
         case "setup":
             return checkParams(reqBody, ["jobs", "dept", "resource", "employee"]);
         case "run":
@@ -17,7 +21,7 @@ export default function validParams(reqBody, type) {
         case "goodPieces":
             return checkParams(reqBody, ["jobs", "dept", "resource", "employee", "quantities"]);
         case "scrapPieces":
-            return checkParams(reqBody, ["jobs", "dept", "resource", "employee", "quantity", "code"]);
+            return checkParams(reqBody, ["job", "dept", "resource", "employee", "quantity", "code"]);
     }
 }
 
