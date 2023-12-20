@@ -1,12 +1,5 @@
 import express from "express";
-// import startShift from "./src/requests/post/operations/machineStartShift.js";
-// import pause from "./src/requests/post/operations/pause.js";
-// import employeeSignIn from "./src/requests/post/operations/employeeSignIn.js";
-// import setup from "./src/requests/post/operations/setup.js";
-// import run from "./src/requests/post/operations/run.js";
-// import resume from "./src/requests/post/operations/resume.js";
-// import reportGood from "./src/requests/post/operations/good.js";
-// import scrap from "./src/requests/post/operations/scrap.js";
+
 // import employeeSignOut from "./src/requests/post/operations/employeeSignOut.js";
 // import endShift from "./src/requests/post/operations/machineEndShift.js";
 
@@ -23,42 +16,25 @@ import scrapPieces from "./src/requests/post/machine/reportScrap.js";
 import getName from "./src/requests/get/user/userExists.js";
 import activateUser from "./src/requests/post/user/userActivate.js";
 
-import newMessage from "./src/user/messages/message.js";
 
 import machineExists from "./src/requests/get/machine/machineExists.js";
-
 import getJob from "./src/requests/get/machine/job.js";
+import getMulitiJobMachine from "./src/requests/get/machine/machineMultiJob.js";
 
-
+import validParams from "./src/user/validation/validation.js";
+import newMessage from "./src/user/messages/message.js";
 
 const app = express();
 import cors from 'cors';
 
-
-
-
 app.use(cors());
 app.use(express.json());
 
-// app.get('/api/:id', async (req, res) => {
-//     const id = req.params.id;
-//     const john = req.query.john;
-//     const james = req.query.james;
- 
-
-//     console.log(id);
-//     console.log(john);
-//     console.log(james);
-//     // Now you can use these variables in your code
- 
-
-//     res.json({
-//         "Success": true
-//     });
-// });
-
 
 app.post('/api/employeeLogin', async (req, res) => {
+
+    if(!validParams(req.body, "employeeLogin")) { res.json(newMessage("Invalid Params", false, true)); return ;}
+
     const id = req.body.id;
     const name = await getName(id);
 
@@ -78,6 +54,8 @@ app.post('/api/employeeLogin', async (req, res) => {
 });
 
 app.post('/api/setMachine', async (req, res) => {
+
+    if(!validParams(req.body, "setMachine")) { res.json(newMessage("Invalid Params", false, true)); return ; }
     
     const dept = req.body.dept;
     const resource = req.body.resource;
@@ -102,12 +80,16 @@ app.post('/api/setMachine', async (req, res) => {
         }
         else {
             const message = `Successfully set ${dept} ${resource}`;
-            res.json(newMessage(message));
+            const mulitiJobMachine = await getMulitiJobMachine(dept, resource);
+            console.log(mulitiJobMachine);
+            res.json(newMessage(message, true, false, { "mulitiJobMachine": mulitiJobMachine }));
         }
     }
 });
 
 app.post('/api/checkJob', async (req, res) => {
+
+    if(!validParams(req.body, "checkJob")) { res.json(newMessage("Invalid Params", false, true)); return ; }
     const dept = req.body.dept;
     const resource = req.body.resource;
     const job = req.body.job;
@@ -123,6 +105,8 @@ app.post('/api/checkJob', async (req, res) => {
 });
 
 app.post('/api/setup', async (req, res) => {
+
+    if(!validParams(req.body, "setup")) { res.json(newMessage("Invalid Params", false, true)); return ; }
 
     const employee = req.body.employee;
     const dept = req.body.dept;
@@ -143,6 +127,8 @@ app.post('/api/setup', async (req, res) => {
 
 app.post('/api/run', async (req, res) => {
 
+    if(!validParams(req.body, "run")) { res.json(newMessage("Invalid Params", false, true)); return ; }
+
     const employee = req.body.employee;
     const dept = req.body.dept;
     const resource = req.body.resource;
@@ -162,6 +148,8 @@ app.post('/api/run', async (req, res) => {
 
 app.post('/api/pause', async (req, res) => {
 
+    if(!validParams(req.body, "pause")) { res.json(newMessage("Invalid Params", false, true)); return ; }
+
     const dept = req.body.dept;
     const resource = req.body.resource;
 
@@ -178,6 +166,8 @@ app.post('/api/pause', async (req, res) => {
 });
 
 app.post('/api/resume', async (req, res) => {
+
+    if(!validParams(req.body, "resume")) { res.json(newMessage("Invalid Params", false, true)); return ; }
 
     const dept = req.body.dept;
     const resource = req.body.resource;
@@ -196,6 +186,8 @@ app.post('/api/resume', async (req, res) => {
 
 
 app.post('/api/goodPieces', async (req, res) => {
+
+    if(!validParams(req.body, "goodPieces")) { res.json(newMessage("Invalid Params", false, true)); return ; }
 
     const employee = req.body.employee;
     const dept = req.body.dept;
@@ -216,6 +208,8 @@ app.post('/api/goodPieces', async (req, res) => {
 });
 
 app.post('/api/scrapPieces', async (req, res) => {
+
+    if(!validParams(req.body, "scrapPieces")) { res.json(newMessage("Invalid Params", false, true)); return ; }
 
     const employee = req.body.employee;
     const dept = req.body.dept;
