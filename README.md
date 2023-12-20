@@ -1,122 +1,122 @@
-An api to interact with the AS400.
+An api to interact with the AS400.  
+    
+Routes:  
 
-Routes:
+/api/employeeLogin  
+/api/setMachine  
+/api/setup  
+/api/run  
+/api/pause  
+/api/resume  
+/api/goodPieces  
+/api/scrapPieces  
+/api/getMachineJobs  
+/api/checkCurrentJob  
+/api/checkJob  
 
-/api/employeeLogin
-/api/setMachine
-/api/setup
-/api/run
-/api/pause
-/api/resume
-/api/goodPieces
-/api/scrapPieces
-/api/getMachineJobs
-/api/checkCurrentJob
-/api/checkJob
+Params:  
 
-Params:
+/api/employeeLogin  
 
-/api/employeeLogin
++--------+-------------------+  
+| param  | description       |  
++--------+-------------------+  
+| id     | The employee code |  
++--------+-------------------+  
 
-+--------+-------------------+
-| param  | description       |
-+--------+-------------------+
-| id     | The employee code |
-+--------+-------------------+
+/api/setMachine  
 
-/api/setMachine
++----------+-------------------+  
+| param    | description       |  
++----------+-------------------+  
+| dept     | The department    |  
+| resource | The resource      |  
+| employee | The employee code |  
++----------+-------------------+  
 
-+----------+-------------------+
-| param    | description       |
-+----------+-------------------+
-| dept     | The department    |
-| resource | The resource      |
-| employee | The employee code |
-+----------+-------------------+
+/api/setup  
 
-/api/setup
++----------+----------------------+  
+| param    | description          |  
++----------+----------------------+  
+| dept     | The department       |  
+| resource | The resource         |  
+| jobs     | Job array of objects |  
+| employee | employee code        |  
++----------+----------------------+  
 
-+----------+----------------------+
-| param    | description          |
-+----------+----------------------+
-| dept     | The department       |
-| resource | The resource         |
-| jobs     | Job array of objects |
-| employee | employee code        |
-+----------+----------------------+
+/api/run  
 
-/api/run
++----------+----------------------+  
+| param    | description          |  
++----------+----------------------+  
+| dept     | The department       |  
+| resource | The resource         |  
+| jobs     | Job array of objects |  
+| employee | employee code        |  
++----------+----------------------+  
 
-+----------+----------------------+
-| param    | description          |
-+----------+----------------------+
-| dept     | The department       |
-| resource | The resource         |
-| jobs     | Job array of objects |
-| employee | employee code        |
-+----------+----------------------+
+/api/pause  
 
-/api/pause
++----------+----------------+  
+| param    | description    |  
++----------+----------------+  
+| dept     | The department |  
+| resource | The resource   |  
++----------+----------------+  
 
-+----------+----------------+
-| param    | description    |
-+----------+----------------+
-| dept     | The department |
-| resource | The resource   |
-+----------+----------------+
+/api/resume  
 
-/api/resume
++----------+----------------+  
+| param    | description    |  
++----------+----------------+  
+| dept     | The department |  
+| resource | The resource   |  
++----------+----------------+  
 
-+----------+----------------+
-| param    | description    |
-+----------+----------------+
-| dept     | The department |
-| resource | The resource   |
-+----------+----------------+
+/api/goodPieces  
 
-/api/goodPieces
++------------+----------------------+  
+| param      | description          |  
++------------+----------------------+  
+| dept       | The department       |  
+| resource   | The resource         |  
+| jobs       | Job array of objects |  
+| employee   | employee code        |  
+| quantities | Array of Integers    |  
++------------+----------------------+  
 
-+------------+----------------------+
-| param      | description          |
-+------------+----------------------+
-| dept       | The department       |
-| resource   | The resource         |
-| jobs       | Job array of objects |
-| employee   | employee code        |
-| quantities | Array of Integers    |
-+------------+----------------------+
+/api/scrapPieces  
 
-/api/scrapPieces
++----------+----------------+  
+| param    | description    |  
++----------+----------------+  
+| dept     | The department |  
+| resource | The resource   |  
+| job      | Job object     |  
+| employee | employee code  |  
+| quantity | Integer        |  
+| code     | Code of scrap  |  
++----------+----------------+  
 
-+----------+----------------+
-| param    | description    |
-+----------+----------------+
-| dept     | The department |
-| resource | The resource   |
-| job      | Job object     |
-| employee | employee code  |
-| quantity | Integer        |
-| code     | Code of scrap  |
-+----------+----------------+
+/api/checkJob  
 
-/api/checkJob
++----------+----------------+  
+| param    | description    |  
++----------+----------------+  
+| dept     | The department |  
+| resource | The resource   |  
+| job      | Job string     |  
++----------+----------------+  
 
-+----------+----------------+
-| param    | description    |
-+----------+----------------+
-| dept     | The department |
-| resource | The resource   |
-| job      | Job string     |
-+----------+----------------+
+/api/checkCurrentJob  
 
-/api/checkCurrentJob
-
-+----------+----------------+
-| param    | description    |
-+----------+----------------+
-| dept     | The department |
-| resource | The resource   |
-| job      | Job string     |
-| seq      | Seq integer    |
-+----------+----------------+
++----------+----------------+  
+| param    | description    |  
++----------+----------------+  
+| dept     | The department |  
+| resource | The resource   |  
+| job      | Job string     |  
+| seq      | Seq integer    |  
++----------+----------------+  
 
