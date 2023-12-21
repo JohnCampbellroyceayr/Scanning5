@@ -2,6 +2,8 @@ export default function validParams(reqBody, type) {
     switch(type) {
         case "employeeLogin":
             return checkParams(reqBody, ["id"]);
+        case "employeeLogout":
+            return checkParams(reqBody, ["id"]);
         case "setMachine":
             return checkParams(reqBody, ["dept", "resource", "employee"]);
         case "checkJob":

@@ -1,9 +1,15 @@
 import express from "express";
-
+import fs from 'fs';
 // import employeeSignOut from "./src/requests/post/operations/employeeSignOut.js";
 // import endShift from "./src/requests/post/operations/machineEndShift.js";
 
+import getName from "./src/requests/get/user/userExists.js";
+import activateUser from "./src/requests/post/user/userActivate.js";
+
+import deactivateUser from "./src/requests/post/user/userSignOut.js";
+
 import setMachine from "./src/requests/post/machine/setMachine.js";
+
 import setup from "./src/requests/post/machine/setup.js";
 import run from "./src/requests/post/machine/run.js";
 
@@ -13,19 +19,14 @@ import resume from "./src/requests/post/machine/resume.js";
 import goodPieces from "./src/requests/post/machine/reportGood.js";
 import scrapPieces from "./src/requests/post/machine/reportScrap.js";
 
-import getName from "./src/requests/get/user/userExists.js";
-import activateUser from "./src/requests/post/user/userActivate.js";
-
-
-import machineExists from "./src/requests/get/machine/machineExists.js";
-import getJob from "./src/requests/get/machine/job.js";
-import getMulitiJobMachine from "./src/requests/get/machine/machineMultiJob.js";
-
 import validParams from "./src/user/validation/validation.js";
 import newMessage from "./src/user/messages/message.js";
 
 import getMachineJobs from "./src/requests/get/machine/getMachineJobs.js";
 import getCurrectJob from "./src/requests/get/machine/currentJob.js";
+import getJob from "./src/requests/get/machine/job.js";
+import getMulitiJobMachine from "./src/requests/get/machine/machineMultiJob.js";
+import machineExists from "./src/requests/get/machine/machineExists.js";
 
 const app = express();
 import cors from 'cors';
@@ -260,6 +261,29 @@ app.post('/api/scrapPieces', async (req, res) => {
 
 });
 
+app.post('/api/employeeLogout', async (req, res) => {
+
+    if(!validParams(req.body, "employeeLogout")) { res.json(newMessage("Invalid Params", false, true)); return ; }
+
+    const id = req.body.id;
+    
+    const result = await deactivateUser(id);
+
+    if(result.error) {
+        res.json(newMessage("An Error occured " + result.error, false, true));
+    }
+    else {
+        const message = `Successfully signed out ${id}`;
+        res.json(newMessage(message));
+    }
+
+});
+
+app.use(express.static('/JohnCampbellProjects/Scanning5'));
+
+app.get('/', function(req, res) {
+    res.send("Documentation can be found here: <a href='/README.md'>README.md</a>");
+});
 
 app.listen(2002, () => {
     console.log('Server is running on port 2002');
