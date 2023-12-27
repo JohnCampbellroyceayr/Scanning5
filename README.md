@@ -3,6 +3,7 @@ An api to interact with the AS400.
 Routes:  
 
 /api/employeeLogin  
+/api/employeeLogout 
 /api/setMachine  
 /api/setup  
 /api/run  
@@ -17,6 +18,14 @@ Routes:
 Params:  
 
 /api/employeeLogin  
+
++--------+-------------------+  
+| param  | description       |  
++--------+-------------------+  
+| id     | The employee code |  
++--------+-------------------+  
+
+/api/employeeLogout  
 
 +--------+-------------------+  
 | param  | description       |  
@@ -126,6 +135,10 @@ Description:
 /api/employeeLogin  
 
 Sets the employee status to active on the mysql server.
+
+/api/employeeLogout
+
+Logs out all machines belonging to that employee and sets the employee to unactive on the mysql server.
 
 /api/setMachine
 

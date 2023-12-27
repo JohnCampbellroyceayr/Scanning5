@@ -30,10 +30,63 @@ import machineExists from "./src/requests/get/machine/machineExists.js";
 
 const app = express();
 import cors from 'cors';
+import getUserMachines from "./src/requests/get/user/getUserMachines.js";
 
 app.use(cors());
 app.use(express.json());
 
+
+app.post('/api/checkJob', async (req, res) => {
+
+    if(!validParams(req.body, "checkJob")) { res.json(newMessage("Invalid Params", false, true)); return ; }
+    const dept = req.body.dept;
+    const resource = req.body.resource;
+    const job = req.body.job;
+
+    const jobValues = await getJob(dept, resource, job);
+
+    if(jobValues == undefined) {
+        res.json(newMessage(`Unable to find job ${job} for resource ${dept} ${resource}`, false));
+    }
+    else {
+        res.json(newMessage(`Do you want to add Work Order ${job}, Sequence ${jobValues["Sequence"]}, Part Number ${jobValues["PartNumber"]}`, true, false, jobValues));
+    }
+});
+
+app.post('/api/checkCurrentJob', async (req, res) => {
+
+    if(!validParams(req.body, "checkCurrentJob")) { res.json(newMessage("Invalid Params", false, true)); return ; }
+
+    const dept = req.body.dept;
+    const resource = req.body.resource;
+    const job = req.body.job;
+    const seq = req.body.seq;
+
+    const jobValues = await getCurrectJob(dept, resource, job, seq);
+
+    res.json(jobValues);
+});
+
+
+app.post('/api/getMachineJobs', async (req, res) => {
+
+    if(!validParams(req.body, "getMachineJobs")) { res.json(newMessage("Invalid Params", false, true)); return ; }
+
+    const dept = req.body.dept;
+    const resource = req.body.resource;
+
+    const jobs = await getMachineJobs(dept, resource);
+
+    res.json(jobs);
+});
+
+app.get('/api/getUserMachines/:id', async (req, res) => {
+
+    const user = req.params.id;
+    const jobs = await getUserMachines(user);
+
+    res.json(jobs);
+});
 
 app.post('/api/employeeLogin', async (req, res) => {
 
@@ -89,50 +142,6 @@ app.post('/api/setMachine', async (req, res) => {
             res.json(newMessage(message, true, false, { "mulitiJobMachine": mulitiJobMachine }));
         }
     }
-});
-
-app.post('/api/checkJob', async (req, res) => {
-
-    if(!validParams(req.body, "checkJob")) { res.json(newMessage("Invalid Params", false, true)); return ; }
-    const dept = req.body.dept;
-    const resource = req.body.resource;
-    const job = req.body.job;
-
-    const jobValues = await getJob(dept, resource, job);
-
-    if(jobValues == undefined) {
-        res.json(newMessage(`Unable to find job ${job} for resource ${dept} ${resource}`, false));
-    }
-    else {
-        res.json(newMessage(`Do you want to add Work Order ${job}, Sequence ${jobValues["Sequence"]}, Part Number ${jobValues["PartNumber"]}`, true, false, jobValues));
-    }
-});
-
-app.post('/api/checkCurrentJob', async (req, res) => {
-
-    if(!validParams(req.body, "checkCurrentJob")) { res.json(newMessage("Invalid Params", false, true)); return ; }
-
-    const dept = req.body.dept;
-    const resource = req.body.resource;
-    const job = req.body.job;
-    const seq = req.body.seq;
-
-    const jobValues = await getCurrectJob(dept, resource, job, seq);
-
-    res.json(jobValues);
-});
-
-
-app.post('/api/getMachineJobs', async (req, res) => {
-
-    if(!validParams(req.body, "getMachineJobs")) { res.json(newMessage("Invalid Params", false, true)); return ; }
-
-    const dept = req.body.dept;
-    const resource = req.body.resource;
-
-    const jobs = await getMachineJobs(dept, resource);
-
-    res.json(jobs);
 });
 
 app.post('/api/setup', async (req, res) => {
