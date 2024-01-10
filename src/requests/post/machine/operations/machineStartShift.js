@@ -1,23 +1,21 @@
-import client from '../../../databases/webservices.js';
+import client from '../../../../databases/webservices.js';
 import xml2js from 'xml2js';
 var parser = new xml2js.Parser();
 
-export default function run(deviceID, departmentCode, resourceCode, workOrder, seqNumber) {
+export default function startShift(deviceID, departmentCode, resourceCode) {
     return new Promise((resolve, reject) => {
         const args = {
-            "Service_ReportProdSetScheduleToRunJob": {
-                "RequestID": "Run",
+            "Service_ReportProdSetShift": {
+                "RequestID": "StartShift",
                 "CMSDataBase": "ROYCEAYR",
                 "ServPlntCod": "DFT",
                 "DeviceID": deviceID,
                 "DepartmentCode": departmentCode,
-                "ResourceCode": resourceCode,
-                "JobNumber": workOrder,
-                "SequenceNumber": seqNumber
+                "ResourceCode": resourceCode
             }
         };
     
-        client.ReportProdSetScheduleToRunJob(args, function(err, result) {
+        client.ReportProdSetShift(args, function(err, result) {
             if (err) {
                 parser.parseString(err.body, (err, obj) => {
                     reject({

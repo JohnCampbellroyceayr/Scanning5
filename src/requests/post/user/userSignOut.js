@@ -1,8 +1,8 @@
 import sqlQuery from "../../../databases/mysql.js";
 import { machineDeviceId } from "../machine/getMachineValues.js";
 
-import employeeSignOut from "../operations/employeeSignOut.js";
-import endShift from "../operations/machineEndShift.js";
+import employeeSignOut from "./operations/employeeSignOut.js";
+import endShift from "../machine/operations/machineEndShift.js";
 
 export default async function deactivateUser(number) {
     const machineResult = await getMachines(number);
@@ -41,7 +41,7 @@ async function signOutMachine(user, dept, res) {
 }
 
 async function deactivateMachine(dept, res) {
-    const result = await sqlQuery("UPDATE machine SET active = ? WHERE department = ? AND resource = ?", [false, dept, res]);
+    const result = await sqlQuery("UPDATE machine SET user = ?, active = ? WHERE department = ? AND resource = ?", [null, false, dept, res]);
     return result;
 }
 

@@ -1,22 +1,24 @@
-import client from '../../../databases/webservices.js';
+import client from '../../../../databases/webservices.js';
+
 import xml2js from 'xml2js';
 var parser = new xml2js.Parser();
 
-export default function employeeSignOut(deviceID, departmentCode, resourceCode, employee) {
+
+export default function endShift(deviceID, departmentCode, resourceCode) {
     return new Promise((resolve, reject) => {
+
         const args = {
-            "Service_ReportProdEmployeeLogout": {
-                "RequestID": "empSignOut",
+            "Service_ReportProdShiftOutIdle": {
+                "RequestID": "StartShift",
                 "CMSDataBase": "ROYCEAYR",
                 "ServPlntCod": "DFT",
                 "DeviceID": deviceID,
                 "DepartmentCode": departmentCode,
-                "ResourceCode": resourceCode,
-                "EmployeeTag": employee,
+                "ResourceCode": resourceCode
             }
         };
-
-        client.ReportProdEmployeeLogout(args, function(err, result) {
+    
+        client.ReportProdShiftOutIdle(args, function(err, result) {
             if (err) {
                 parser.parseString(err.body, (err, obj) => {
                     reject({

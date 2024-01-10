@@ -1,24 +1,27 @@
-import client from '../../../databases/webservices.js';
-
+import client from '../../../../databases/webservices.js';
 import xml2js from 'xml2js';
 var parser = new xml2js.Parser();
-
-
-export default function endShift(deviceID, departmentCode, resourceCode) {
+ 
+export default function scrap(deviceID, departmentCode, resourceCode, workOrder, seqNumber, employee, quantity, code) {
     return new Promise((resolve, reject) => {
-
         const args = {
-            "Service_ReportProdShiftOutIdle": {
-                "RequestID": "StartShift",
+            "Service_ReportProdScrap": {
+                "RequestID": "reportScrap",
                 "CMSDataBase": "ROYCEAYR",
                 "ServPlntCod": "DFT",
+                "CustomizedLibrary": "ROYCEAYR",
                 "DeviceID": deviceID,
                 "DepartmentCode": departmentCode,
-                "ResourceCode": resourceCode
+                "ResourceCode": resourceCode,
+                "JobNumber": workOrder,
+                "SequenceNumber": seqNumber,
+                "EmployeeTag": employee,
+                "ScrapQuantity": quantity,
+                "ReasonCode": code
             }
         };
-    
-        client.ReportProdShiftOutIdle(args, function(err, result) {
+
+        client.ReportProdScrap(args, function(err, result) {
             if (err) {
                 parser.parseString(err.body, (err, obj) => {
                     reject({

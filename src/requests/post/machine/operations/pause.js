@@ -1,22 +1,20 @@
-import client from '../../../databases/webservices.js';
+import client from '../../../../databases/webservices.js';
 import xml2js from 'xml2js';
 var parser = new xml2js.Parser();
 
-export default function resume(deviceID, departmentCode, resourceCode) {
+export default function pause(deviceID, departmentCode, resourceCode) {
     return new Promise((resolve, reject) => {
         const args = {
-            "Service_SetProdMachineToResume": {
-                "RequestID": "resume",
+            "Service_SetProdMachineToDown": {
+                "RequestID": "Pause",
                 "CMSDataBase": "ROYCEAYR",
                 "ServPlntCod": "DFT",
-                "CustomizedLibrary": "ROYCEAYR",
                 "DeviceID": deviceID,
                 "DepartmentCode": departmentCode,
-                "ResourceCode": resourceCode
+                "ResourceCode": resourceCode,
             }
         };
-    
-        client.SetProdMachineToResume(args, function(err, result) {
+        client.SetProdMachineToDown(args, function(err, result) {
             if (err) {
                 parser.parseString(err.body, (err, obj) => {
                     reject({
@@ -25,7 +23,7 @@ export default function resume(deviceID, departmentCode, resourceCode) {
                 })
             } else {
                 resolve({
-                    result: result   
+                    result: result
                 });
             }
         });

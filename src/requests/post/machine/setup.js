@@ -1,7 +1,7 @@
 import sqlQuery from "../../../databases/mysql.js";
 
-import startShift from "../operations/machineStartShift.js";
-import scanSetup from "../operations/setup.js";
+import startShift from "./operations/machineStartShift.js";
+import scanSetup from "./operations/setup.js";
 
 import { machineDeviceId, machineStatus, machineExistsOnDatabase } from "./getMachineValues.js";
 

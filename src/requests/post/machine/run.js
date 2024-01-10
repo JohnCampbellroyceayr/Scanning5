@@ -1,11 +1,12 @@
 import sqlQuery from "../../../databases/mysql.js";
 
-import startShift from "../operations/machineStartShift.js";
-import scanRun from "../operations/run.js";
+import startShift from "./operations/machineStartShift.js";
+import scanRun from "./operations/run.js";
+import runNonReporting from "./operationsNotReporting/run.js";
 
 import { machineDeviceId, machineStatus, machineExistsOnDatabase } from "./getMachineValues.js";
 
-export default async function setup(employee, dept, resource, jobs) {
+export default async function run(employee, dept, resource, jobs) {
 
     const status = await machineStatus(dept, resource);
     const deviceId = await machineDeviceId(dept, resource);
@@ -29,7 +30,12 @@ export default async function setup(employee, dept, resource, jobs) {
         }
         for (let i = 0; i < jobs.length; i++) {
             const job = jobs[i];
-            await scanRun(deviceId, dept, resource, job["Job"], job["Sequence"]);
+            if(job["ReportingPoint"] == "Y") {
+                await scanRun(deviceId, dept, resource, job["Job"], job["Sequence"]);
+            }
+            else {
+                await runNonReporting(deviceId, dept, resource, job["Job"], job["Sequence"]);
+            }
         }
         return true;
     }

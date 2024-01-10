@@ -1,8 +1,8 @@
 import sqlQuery from "../../../databases/mysql.js";
 
-import startShift from "../operations/machineStartShift.js";
-import pause from "../operations/pause.js";
-import employeeSignIn from "../operations/employeeSignIn.js";
+import startShift from "./operations/machineStartShift.js";
+import pause from "./operations/pause.js";
+import employeeSignIn from "../user/operations/employeeSignIn.js";
 import { machineDeviceId, machineStatus, machineExistsOnDatabase } from "./getMachineValues.js";
 import { userExists } from "../user/getUserValues.js";
 import getName from "../../get/user/userExists.js";

@@ -1,11 +1,11 @@
 import sqlQuery from "../../../databases/mysql.js";
 import ODBC from "../../../databases/odbc.js";
 
-import startShift from "../operations/machineStartShift.js";
+import startShift from "./operations/machineStartShift.js";
 
 import setMachineEmpLogin from "./setMachine.js";
-import scanRun from "../operations/run.js";
-import reportGood from "../operations/good.js";
+import scanRun from "./operations/run.js";
+import reportGood from "./operations/good.js";
 
 import { machineDeviceId, machineStatus, machineExistsOnDatabase } from "./getMachineValues.js";
 
@@ -34,9 +34,16 @@ export default async function goodPieces(employee, dept, resource, jobs, quantit
     }
     catch(err) {
         console.log(err);
-        if(err.error.includes("0024") && err.error.includes("Labour list must be entered") && setMachine === false) {
-            await setMachineEmpLogin(dept, resource, employee);
-            return goodPieces(employee, dept, resource, jobs, quantities, true)
+        if(err.error !== undefined) {
+            if(err.error.includes("0024") && err.error.includes("Labour list must be entered") && setMachine === false) {
+                await setMachineEmpLogin(dept, resource, employee);
+                return goodPieces(employee, dept, resource, jobs, quantities, true)
+            }
+        }
+        else {
+            return {
+                error: "An unknown application failure, make sure all params are correct, please refer to the docs, located at {ip address}/README.md"
+            }
         }
         return err;
     }
@@ -53,7 +60,6 @@ async function updateMachine(dept, res, job, quantity) {
         return new Error('Error in getting jobs');
     }
     const newJobs = updateMachineJobs(jobs.result[0]["jobs"], job, quantity);
-    console.log(newJobs);
     const setQuery = `
         UPDATE machine SET jobs = ? WHERE department = ? AND resource = ?;
     `;
