@@ -20,7 +20,7 @@ export default async function scrapPieces(employee, dept, resource, job, quantit
         if(status === "I") {
             await startShift(deviceId, dept, resource);
         }
-        if(job["ReportingSequence"] == "Y") {
+        if(job["ReportingPoint"] == "Y") {
             await scanRun(deviceId, dept, resource, job["Job"], job["Sequence"]);
             await reportScrap(deviceId, dept, resource, job["Job"], job["Sequence"], employee, quantity, code);
         }
