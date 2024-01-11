@@ -34,7 +34,7 @@ export default async function run(employee, dept, resource, jobs) {
                 await scanRun(deviceId, dept, resource, job["Job"], job["Sequence"]);
             }
             else {
-                await runNonReporting(deviceId, dept, resource, job["Job"], job["Sequence"]);
+                await runNonReporting(employee, dept, resource, job["Job"], job["Sequence"]);
             }
         }
         return true;

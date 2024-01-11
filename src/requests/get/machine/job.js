@@ -99,8 +99,8 @@ async function getTotalCompletedNotes(workOrder, machineStr) {
                 for (let i = 0; i < result.length; i++) {
                     const line = result[i]["GGTEXT"];
                     const lineArr = line.split(">");
-                    if(lineArr[0] == "<Good Pieces" && lineArr[3] == "<" + machineStr) {
-                        number += parseInt(lineArr[5].replaceAll("<", ""));
+                    if(lineArr[0] == "<Good Pieces" && lineArr[4] == "<" + machineStr) {
+                        number += parseInt(lineArr[6].replaceAll("<", ""));
                     }
                 }
                 resolve(number);

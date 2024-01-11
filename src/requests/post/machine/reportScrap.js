@@ -2,7 +2,7 @@ import startShift from "./operations/machineStartShift.js";
 import setMachineEmpLogin from "./setMachine.js";
 import scanRun from "./operations/run.js";
 import reportScrap from "./operations/scrap.js";
-
+import reportScrapNoReport from "./operationsNotReporting/reportScrap.js";
 import { machineDeviceId, machineStatus, machineExistsOnDatabase } from "./getMachineValues.js";
 
 export default async function scrapPieces(employee, dept, resource, job, quantity, code) {
@@ -20,8 +20,13 @@ export default async function scrapPieces(employee, dept, resource, job, quantit
         if(status === "I") {
             await startShift(deviceId, dept, resource);
         }
-        await scanRun(deviceId, dept, resource, job["Job"], job["Sequence"]);
-        await reportScrap(deviceId, dept, resource, job["Job"], job["Sequence"], employee, quantity, code);
+        if(job["ReportingSequence"] == "Y") {
+            await scanRun(deviceId, dept, resource, job["Job"], job["Sequence"]);
+            await reportScrap(deviceId, dept, resource, job["Job"], job["Sequence"], employee, quantity, code);
+        }
+        else {
+            await reportScrapNoReport(employee, dept, resource, job["Job"], job["Sequence"], quantity, code);
+        }
         return true;
     }
     catch(err) {

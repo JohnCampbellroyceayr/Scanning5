@@ -3,6 +3,8 @@ import sqlQuery from "../../../databases/mysql.js";
 import startShift from "./operations/machineStartShift.js";
 import scanSetup from "./operations/setup.js";
 
+import setupNonReporting from "./operationsNotReporting/setup.js";
+
 import { machineDeviceId, machineStatus, machineExistsOnDatabase } from "./getMachineValues.js";
 
 export default async function setup(employee, dept, resource, jobs) {
@@ -29,7 +31,12 @@ export default async function setup(employee, dept, resource, jobs) {
         }
         for (let i = 0; i < jobs.length; i++) {
             const job = jobs[i];
-            await scanSetup(deviceId, dept, resource, job["Job"], job["Sequence"]);
+            if(job["ReportingPoint"] == "Y") {
+                await scanSetup(deviceId, dept, resource, job["Job"], job["Sequence"]);
+            }
+            else {
+                await setupNonReporting(employee, dept, resource, job["Job"], job["Sequence"]);
+            }
         }
         return true;
     }
@@ -54,4 +61,5 @@ async function setMachineOnDataBase(user, dept, res, deviceId, jobs) {
     }
     const result = await sqlQuery(query, args);
     return result;
+    
 }
