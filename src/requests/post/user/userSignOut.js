@@ -22,12 +22,7 @@ export default async function deactivateUser(number) {
     return true;
 }
 
-async function logoutUserServer(number) {
-    const result = await sqlQuery("UPDATE user SET active = ?, status = ?, machine_department = ?, machine_resource = ? WHERE number = ?;", [false, null, null, null, number]);
-    return result;
-}
-
-async function signOutMachine(user, dept, res) {
+export async function signOutMachine(user, dept, res) {
     const deviceId = await machineDeviceId(dept, res);
     try {
         await employeeSignOut(deviceId, dept, res, user);
@@ -39,6 +34,12 @@ async function signOutMachine(user, dept, res) {
         return error;
     }
 }
+
+async function logoutUserServer(number) {
+    const result = await sqlQuery("UPDATE user SET active = ?, status = ?, machine_department = ?, machine_resource = ? WHERE number = ?;", [false, null, null, null, number]);
+    return result;
+}
+
 
 async function deactivateMachine(dept, res) {
     const result = await sqlQuery("UPDATE machine SET user = ?, jobs = ?, active = ? WHERE department = ? AND resource = ?", [null, null, false, dept, res]);

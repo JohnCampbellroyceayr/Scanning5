@@ -29,6 +29,9 @@ import getJob from "./src/requests/get/machine/job.js";
 import getMulitiJobMachine from "./src/requests/get/machine/machineMultiJob.js";
 import machineExists from "./src/requests/get/machine/machineExists.js";
 
+import removeJob from "./src/requests/post/machine/removeJob.js";
+import removeMachine from "./src/requests/post/user/removeMachine.js";
+
 const app = express();
 import cors from 'cors';
 import getUserMachines from "./src/requests/get/user/getUserMachines.js";
@@ -93,6 +96,7 @@ app.post('/api/getUser', async (req, res) => {
     });
 });
 
+
 app.post('/api/employeeLogin', async (req, res) => {
 
     if(!validParams(req.body, "employeeLogin")) { res.json(newMessage("Invalid Params", false, true)); return ;}
@@ -148,6 +152,7 @@ app.post('/api/setMachine', async (req, res) => {
         }
     }
 });
+
 
 app.post('/api/setup', async (req, res) => {
 
@@ -229,7 +234,6 @@ app.post('/api/resume', async (req, res) => {
 
 });
 
-
 app.post('/api/goodPieces', async (req, res) => {
 
     if(!validParams(req.body, "goodPieces")) { res.json(newMessage("Invalid Params", false, true)); return ; }
@@ -271,6 +275,45 @@ app.post('/api/scrapPieces', async (req, res) => {
     else {
         const message = `Successfully scrapped work orders on ${dept} ${resource}`;
         res.json(newMessage(message));
+    }
+
+});
+
+
+app.post('/api/removeJob', async (req, res) => {
+
+    if(!validParams(req.body, "removeJob")) { res.json(newMessage("Invalid Params", false, true)); return ; }
+
+    const dept = req.body.dept;
+    const resource = req.body.resource;
+    const job = req.body.job;
+
+    const jobValues = await removeJob(dept, resource, job);
+
+    if(jobValues == true) {
+        res.json(newMessage(`Successfully removed job ${job} for resource ${dept} ${resource}`, false));
+    }
+    else {
+        res.json(newMessage(`Failed to remove job ${job} for resource ${dept} ${resource}`, true, false, jobValues));
+    }
+
+});
+
+app.post('/api/removeMachine', async (req, res) => {
+
+    if(!validParams(req.body, "removeMachine")) { res.json(newMessage("Invalid Params", false, true)); return ; }
+
+    const user = req.body.user;
+    const dept = req.body.dept;
+    const resource = req.body.resource;
+
+    const jobValues = await removeMachine(user, dept, resource);
+
+    if(jobValues == true) {
+        res.json(newMessage(`Successfully removed machine ${dept} ${resource}`, false));
+    }
+    else {
+        res.json(newMessage(`Failed to remove job ${job} for resource ${dept} ${resource}`, true, false, jobValues));
     }
 
 });
