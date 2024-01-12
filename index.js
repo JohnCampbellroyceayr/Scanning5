@@ -23,7 +23,7 @@ import validParams from "./src/user/validation/validation.js";
 import newMessage from "./src/user/messages/message.js";
 
 import getMachineJobs from "./src/requests/get/machine/getMachineJobs.js";
-import getCurrectJob from "./src/requests/get/machine/currentJob.js";
+import getCurrentJob from "./src/requests/get/machine/currentJob.js";
 import getJob from "./src/requests/get/machine/job.js";
 import getMulitiJobMachine from "./src/requests/get/machine/machineMultiJob.js";
 import machineExists from "./src/requests/get/machine/machineExists.js";
@@ -62,7 +62,7 @@ app.post('/api/checkCurrentJob', async (req, res) => {
     const job = req.body.job;
     const seq = req.body.seq;
 
-    const jobValues = await getCurrectJob(dept, resource, job, seq);
+    const jobValues = await getCurrentJob(dept, resource, job, seq);
 
     res.json(jobValues);
 });
@@ -297,23 +297,3 @@ app.get('/', function(req, res) {
 app.listen(2002, () => {
     console.log('Server is running on port 2002');
 });
-
-// console.time();
-// try {
-//     await startShift("QAREP", "WD", "LAS01");
-//     await pause("QAREP", "WD", "LAS01");
-//     await employeeSignIn("QAREP", "WD", "LAS01", "02410");
-//     await setup("QAREP", "WD", "LAS01", "067836", "10");
-//     await run("QAREP", "WD", "LAS01", "067836", "10");
-//     await pause("QAREP", "WD", "LAS01");
-//     await resume("QAREP", "WD", "LAS01");
-//     await reportGood("QAREP", "WD", "LAS01", "067836", "10", "02410", "120-TEST", "2");
-//     await scrap("QAREP", "WD", "LAS01", "067836", "10", "02410", "1", "BB");
-//     await employeeSignOut("QAREP", "WD", "LAS01", "02410");
-//     await endShift("QAREP", "WD", "LAS01");
-// }
-// catch(err) {
-//     console.log(err);
-// }
-
-// console.timeEnd();

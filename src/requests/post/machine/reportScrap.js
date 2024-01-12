@@ -34,7 +34,7 @@ export default async function scrapPieces(employee, dept, resource, job, quantit
         if(err.error !== undefined) {
             if(err.error.includes("0024") && err.error.includes("Labour list must be entered") && setMachine === false) {
                 await setMachineEmpLogin(dept, resource, employee);
-                return scrapPieces(employee, dept, resource, job, quantity, code)
+                return scrapPieces(employee, dept, resource, job, quantity, code);
             }
         }
         else {

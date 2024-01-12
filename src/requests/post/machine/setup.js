@@ -17,11 +17,12 @@ export default async function setup(employee, dept, resource, jobs) {
             error: "Device Id doesn't exist"
         }
     }
-
-    const result = await setMachineOnDataBase(employee, dept, resource, deviceId, jobs);
-    if(result.error) {
-        return {
-            error: "Something went wrong with setting the machine"
+    if(jobs.length > 0) {
+        const result = await setMachineOnDataBase(employee, dept, resource, deviceId, jobs);
+        if(result.error) {
+            return {
+                error: "Something went wrong with setting the machine"
+            }
         }
     }
 
@@ -41,8 +42,14 @@ export default async function setup(employee, dept, resource, jobs) {
         return true;
     }
     catch(err) {
-        console.log(err);
-        return err;
+        if(err.error == undefined) {
+            return {
+                error: err
+            };
+        }
+        else {
+            return err;
+        }
     }
 }
 

@@ -33,7 +33,7 @@ export default async function goodPieces(employee, dept, resource, jobs, quantit
                 await reportGood(deviceId, dept, resource, job["Job"], job["Sequence"], employee, job["PartNumber"], quantities[i]);    
             }
             else {
-                await reportGoodNoReport(employee, dept, resource, job["Job"], job["Sequence"], quantities[i])
+                await reportGoodNoReport(employee, dept, resource, job["Job"], job["Sequence"], quantities[i]);
             }
             await updateMachine(dept, resource, job, quantities[i]);
         }

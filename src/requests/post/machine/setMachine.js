@@ -40,8 +40,14 @@ export default async function setMachine(dept, resource, employee) {
         return true;
     }
     catch(err) {
-        console.log(err);
-        return err;
+        if(err.error == undefined) {
+            return {
+                error: err
+            };
+        }
+        else {
+            return err;
+        }
     }
 }
 
