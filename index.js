@@ -23,6 +23,7 @@ import validParams from "./src/user/validation/validation.js";
 import newMessage from "./src/user/messages/message.js";
 
 import getMachineJobs from "./src/requests/get/machine/getMachineJobs.js";
+import getCurrentUser from "./src/requests/get/user/getCurrentUser.js";
 import getCurrentJob from "./src/requests/get/machine/currentJob.js";
 import getJob from "./src/requests/get/machine/job.js";
 import getMulitiJobMachine from "./src/requests/get/machine/machineMultiJob.js";
@@ -80,12 +81,16 @@ app.post('/api/getMachineJobs', async (req, res) => {
     res.json(jobs);
 });
 
-app.get('/api/getUserMachines/:id', async (req, res) => {
+app.post('/api/getUser', async (req, res) => {
 
-    const user = req.params.id;
-    const jobs = await getUserMachines(user);
+    const user = req.body.id;
+    const userObj = await getCurrentUser(user);
+    const machines = await getUserMachines(user);
 
-    res.json(jobs);
+    res.json({
+        user: userObj,
+        machines: machines
+    });
 });
 
 app.post('/api/employeeLogin', async (req, res) => {

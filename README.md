@@ -14,6 +14,7 @@ Routes:
 /api/getMachineJobs  
 /api/checkCurrentJob  
 /api/checkJob  
+/api/getUser  
 
 Params:  
 
@@ -129,6 +130,12 @@ Params:
 | seq      | Seq integer    |  
 +----------+----------------+  
 
+/api/getUser  
++--------+-------------------+  
+| param  | description       |  
++--------+-------------------+  
+| id     | The employee code |  
++--------+-------------------+  
 
 Description:
 
@@ -180,3 +187,6 @@ Gets the most up-to-date info on a job
 
 Makes sure that the job exists
 
+/api/getUser  
+
+Gets the user name, status, current machine and other machines.

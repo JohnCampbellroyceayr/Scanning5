@@ -6,6 +6,8 @@ export default function validParams(reqBody, type) {
             return checkParams(reqBody, ["id"]);
         case "setMachine":
             return checkParams(reqBody, ["dept", "resource", "employee"]);
+        case "getUser":
+            return checkParams(reqBody, ["id"]);
         case "checkJob":
             return checkParams(reqBody, ["dept", "resource", "job"]);
         case "checkCurrentJob":

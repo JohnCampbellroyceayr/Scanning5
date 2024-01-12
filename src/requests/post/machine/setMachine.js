@@ -23,32 +23,36 @@ export default async function setMachine(dept, resource, employee) {
             error: "Something went wrong with setting the employee"
         }
     }
-    const setMachineResult = await setMachineOnDataBase(employee, dept, resource, deviceId);
-    if(setMachineResult.error) {
-        return {
-            error: "Something went wrong with setting the machine"
-        }
-    }
 
+    const machineSet = await machineAlreadySet(employee, dept, resource);
 
-    try {
-        if(status === "I") {
-            await startShift(deviceId, dept, resource);
-        }
-        await pause(deviceId, dept, resource);
-        await employeeSignIn(deviceId, dept, resource, employee);
-        return true;
-    }
-    catch(err) {
-        if(err.error == undefined) {
+    if(machineSet !== true) {
+        const setMachineResult = await setMachineOnDataBase(employee, dept, resource, deviceId);
+        if(setMachineResult.error) {
             return {
-                error: err
-            };
+                error: "Something went wrong with setting the machine"
+            }
         }
-        else {
-            return err;
+        try {
+            if(status === "I") {
+                await startShift(deviceId, dept, resource);
+            }
+            await pause(deviceId, dept, resource);
+            await employeeSignIn(deviceId, dept, resource, employee);
+            return true;
+        }
+        catch(err) {
+            if(err.error == undefined) {
+                return {
+                    error: err
+                };
+            }
+            else {
+                return err;
+            }
         }
     }
+    return true;
 }
 
 
@@ -87,4 +91,19 @@ async function setUserOnDataBase(user, dept, res) {
     const result = await sqlQuery(query, args);
     return result;
     
+}
+
+async function machineAlreadySet(employee, dept, resource) {
+    const query = "SELECT user FROM machine WHERE department = ? AND resource = ? AND active = ?;";
+    const args = [dept, resource, true];
+    const result = await sqlQuery(query, args);
+    try {
+        if(result.result[0].user == employee) {
+            return true;
+        }
+    }
+    catch {
+
+    }
+    return false;
 }

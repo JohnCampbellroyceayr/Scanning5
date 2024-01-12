@@ -5,6 +5,8 @@ import resumeScanning from "./operations/resume.js";
 
 import { machineDeviceId, machineStatus, machineExistsOnDatabase, machineMode } from "./getMachineValues.js";
 
+import { getMachineOnDataBaseStatus } from "./pause.js";
+
 export default async function resume(dept, resource) {
 
     const status = await machineStatus(dept, resource);
@@ -53,12 +55,18 @@ export default async function resume(dept, resource) {
 async function setMachineOnDataBase(dept, res) {
 
     const machineExists = await machineExistsOnDatabase(dept, res);
+    const currentStatus = await getMachineOnDataBaseStatus(dept, res);
+    const newStatus = getNewStatus(currentStatus);
 
     if(machineExists) {
         var query = "UPDATE machine SET status = ? WHERE department = ? AND resource = ?;";
-        var args = ["Res", dept, res];
+        var args = [newStatus, dept, res];
         const result = await sqlQuery(query, args);
         return result;
     }
 
+}
+
+function getNewStatus(oldStatus) {
+    return oldStatus.replace("-Paused", "");
 }
