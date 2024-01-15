@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanning</title>
+</head>
+<body>
+    <div>
+        <div id="Employee"></div>
+        <div id="EmployeeStatus"></div>
+        <div id="Machine"></div>
+        <div id="MachineStatus"></div>
+        <div id="Jobs">
+
+        </div>
+    </div>
+    <button id="Johncampbell" onclick="employeeSignIn()">Employee Log in</button>
+    <button onclick="signOut()">Employee Logout</button>
+    <br>
+    <button onclick="setMachine()">Set Machine</button>
+    <button onclick="removeMachine()">Forget Machine</button>
+    <br>
+    <button onclick="setup()">Setup</button>
+    <button onclick="run()">Run</button>
+    <br>
+    <button onclick="pause()">Pause</button>
+    <button onclick="resume()">Resume</button>
+    <br>
+    <button onclick="goodPieces()">Good Pieces</button>
+    <button onclick="scrapPieces()">Scrap Pieces</button>
+    <br>
+    <button onclick="removeJob()">Remove Job</button>
+
+</body>
+
+<script>
+    let EmployeeObj = {
+
+    }
+    let MachineObj = {
+
+    }
+
+    function checkEmployee() {
+        if(EmployeeObj.number == undefined) {
+            alert("Employee is not signed in");
+            return false;
+        }
+        return true;
+    }
+    function checkMachine() {
+        if(MachineObj.dept == undefined || MachineObj.resource == undefined) {
+            alert("Machine is not signed in");
+            return false;
+        }
+        return true;
+    }
+
+    async function getMachineJobs() {
+        const url = 'http://192.168.0.19:2002/api/getMachineJobs';
+        
+        const obj = {
+            dept: MachineObj.dept,
+            resource: MachineObj.resource,
+        }
+
+        const result = await post(url, obj);
+
+        return result;
+    }
+
+    async function getCurrentJob(job, seq) {
+        const url = 'http://192.168.0.19:2002/api/checkCurrentJob';
+
+        const obj = {
+            dept: MachineObj.dept,
+            resource: MachineObj.resource,
+            job: job,
+            seq: seq
+        }
+        const result = await post(url, obj);
+        return result;
+    }
+
+    async function getAllJobs(jobs) {
+        if(jobs == null) {
+            jobs = [];
+        }
+        if(jobs.length == 1 && MachineObj.mulitiJobMachine == 'N') {
+            return jobs;
+        }
+        const url = 'http://192.168.0.19:2002/api/checkJob';
+        const jobStr = getJobsDisplayString(jobs);
+        const job = prompt("Current jobs: " + jobStr + "Enter Job", "");
+        
+        if(job == undefined || job == '') {
+            return jobs;
+        }
+        const obj = {
+            dept: MachineObj.dept,
+            resource: MachineObj.resource,
+            job: job
+        }
+        const result = await post(url, obj);
+        if(confirm(result.message)) {
+            jobs.push(result.args);
+            if(MachineObj.mulitiJobMachine == "Y") {
+                return getAllJobs(jobs);
+            }
+            else {
+                return jobs;
+            }
+        }
+        else {
+            if(MachineObj.mulitiJobMachine == "Y") {
+                return getAllJobs(jobs);
+            }
+            else {
+                return jobs;
+            }
+        }
+    }
+    function checkJob(job) {
+        const obj = {
+            dept: MachineObj.dept,
+            resource: MachineObj.resource,
+            job: job
+        }
+        return post('http://192.168.0.19:2002/api/checkJob', obj);
+    }
+
+    async function getCurrentUser() {
+        const url = 'http://192.168.0.19:2002/api/getUser';
+
+        const obj = {
+            id: EmployeeObj.number
+        }
+        const result = await post(url, obj);
+        return result;
+    }
+
+    function confirmJobsDisplayMessage(jobsArr, initialMessage) {
+        let str = initialMessage + '\n';
+        for (let i = 0; i < jobsArr.length; i++) {
+            const job = jobsArr[i];
+            str += "W/O " + jobsArr[i].Job;
+            str += " Seq " + jobsArr[i].Sequence;
+            str += '\n';
+        }
+        return str;
+    }
+
+
+    function post(url, obj) {
+        return new Promise((resolve, reject) => {
+            fetch(url, {
+                method: 'POST', 
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    ...obj
+                }) 
+            })
+
+            .then(response => response.json())
+            .then(data => resolve(data))
+            .catch((error) => {
+                console.error('Error:', error);
+                resolve(error)
+            });
+        })
+    }
+</script>
+<script src="message.js"></script>
+<script src="setup.js"></script>
+<script src="run.js"></script>
+<script src="pause.js"></script>
+<script src="resume.js"></script>
+<script src="goodPieces.js"></script>
+<script src="scrapPieces.js"></script>
+<script src="setMachine.js"></script>
+<script src="signIn.js"></script>
+<script src="signOut.js"></script>
+<script src="removeJob.js"></script>
+<script src="removeMachine.js"></script>
+<script src="getGoodScrapJobs.js"></script>
+<script>
+
+    // display();
+
+</script>
+
+</html>

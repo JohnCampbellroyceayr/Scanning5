@@ -303,10 +303,10 @@ app.post('/api/removeJob', async (req, res) => {
     const jobValues = await removeJob(dept, resource, job);
 
     if(jobValues == true) {
-        res.json(newMessage(`Successfully removed job ${job} for resource ${dept} ${resource}`, false));
+        res.json(newMessage(`Successfully removed job ${job} for resource ${dept} ${resource}`, true));
     }
     else {
-        res.json(newMessage(`Failed to remove job ${job} for resource ${dept} ${resource}`, true, false, jobValues));
+        res.json(newMessage(`Failed to remove job ${job} for resource ${dept} ${resource}`, false, false, jobValues));
     }
 
 });
@@ -322,10 +322,10 @@ app.post('/api/removeMachine', async (req, res) => {
     const jobValues = await removeMachine(user, dept, resource);
 
     if(jobValues == true) {
-        res.json(newMessage(`Successfully removed resource ${dept} ${resource}`, false));
+        res.json(newMessage(`Successfully removed resource ${dept} ${resource}`, true));
     }
     else {
-        res.json(newMessage(`Failed to remove resource ${dept} ${resource}`, true, false, jobValues));
+        res.json(newMessage(`Failed to remove resource ${dept} ${resource}`, false, false, jobValues));
     }
 
 });
