@@ -103,22 +103,28 @@
             job: job
         }
         const result = await post(url, obj);
-        if(confirm(result.message)) {
-            jobs.push(result.args);
-            if(MachineObj.mulitiJobMachine == "Y") {
-                return getAllJobs(jobs);
+        if(result.success == true) {
+            if(confirm(result.message)) {
+                jobs.push(result.args);
+                if(MachineObj.mulitiJobMachine == "Y") {
+                    return getAllJobs(jobs);
+                }
+                else {
+                    return jobs;
+                }
             }
             else {
-                return jobs;
+                if(MachineObj.mulitiJobMachine == "Y") {
+                    return getAllJobs(jobs);
+                }
+                else {
+                    return jobs;
+                }
             }
         }
         else {
-            if(MachineObj.mulitiJobMachine == "Y") {
-                return getAllJobs(jobs);
-            }
-            else {
-                return jobs;
-            }
+            displayMessage(result);
+            return getAllJobs(jobs);
         }
     }
     function checkJob(job) {
