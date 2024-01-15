@@ -18,6 +18,7 @@ import resume from "./src/requests/post/machine/resume.js";
 
 import goodPieces from "./src/requests/post/machine/reportGood.js";
 import scrapPieces from "./src/requests/post/machine/reportScrap.js";
+import getScrapCodes from "./src/requests/get/machine/scrapCodes.js";
 
 import validParams from "./src/user/validation/validation.js";
 import newMessage from "./src/user/messages/message.js";
@@ -279,6 +280,17 @@ app.post('/api/scrapPieces', async (req, res) => {
 
 });
 
+app.post('/api/getScrapCodes', async (req, res) => {
+
+    try {
+        const scrapCodes = await getScrapCodes();
+        res.json(scrapCodes);
+    }
+    catch(error) {
+        res.json(newMessage("No codes found, error", false, true, error));
+    }
+
+});
 
 app.post('/api/removeJob', async (req, res) => {
 
@@ -310,10 +322,10 @@ app.post('/api/removeMachine', async (req, res) => {
     const jobValues = await removeMachine(user, dept, resource);
 
     if(jobValues == true) {
-        res.json(newMessage(`Successfully removed machine ${dept} ${resource}`, false));
+        res.json(newMessage(`Successfully removed resource ${dept} ${resource}`, false));
     }
     else {
-        res.json(newMessage(`Failed to remove job ${job} for resource ${dept} ${resource}`, true, false, jobValues));
+        res.json(newMessage(`Failed to remove resource ${dept} ${resource}`, true, false, jobValues));
     }
 
 });

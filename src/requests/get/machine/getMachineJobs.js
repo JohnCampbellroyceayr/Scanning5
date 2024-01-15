@@ -12,7 +12,11 @@ export default async function getMachineJobs(dept, res) {
     }
     try {
         if(result.result.length > 0) {
-            return result.result[0]["jobs"];
+            if (Array.isArray(result.result[0]["jobs"])) {
+                return result.result[0]["jobs"];
+            } else {
+                return [];
+            }
         }
     }
     catch(err) {

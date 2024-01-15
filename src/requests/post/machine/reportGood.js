@@ -79,11 +79,22 @@ async function updateMachine(dept, res, job, quantity) {
 }
 
 function updateMachineJobs(machineJobs, job, quantity) {
-    job["GoodPieces"] = job["GoodPieces"] + quantity;
-    for (let i = 0; i < machineJobs.length; i++) {
-        if(machineJobs[i]["Job"] == job["Job"] && machineJobs[i]["Sequence"] == job["Sequence"]) {
-            machineJobs[i] = job;
+    try {
+        let updatedMachineJobs = [];
+        job["GoodPieces"] = parseInt(job["GoodPieces"]) + parseInt(quantity);
+        for (let i = 0; i < machineJobs.length; i++) {
+            if(machineJobs[i]["Job"] == job["Job"] && machineJobs[i]["Sequence"] == job["Sequence"]) {
+                if(parseInt(machineJobs[i]["PiecesNeeded"]) > parseInt(job["GoodPieces"])) {
+                    updatedMachineJobs.push(machineJobs[i]);
+                }
+            }
+            else {
+                updatedMachineJobs.push(machineJobs[i]);
+            }
         }
+        return updatedMachineJobs;
     }
-    return machineJobs;
+    catch(error) {
+        return [];
+    }
 }
