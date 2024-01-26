@@ -81,10 +81,8 @@ async function scanAllGroup(employee, deviceId, dept, resource, jobs) {
         const dateTime = getCurrentDateTime();
         const jobToScanReportingIndex = getFirstReportingSeqIndex(jobs);
         for (let i = 0; i < jobs.length; i++) {
-            if(jobToScanReportingIndex !== i) {
-                const job = jobs[i];
-                await runNonReporting(employee, dept, resource, job["Job"], job["Sequence"], true, dateTime);
-            }
+            const job = jobs[i];
+            await runNonReporting(employee, dept, resource, job["Job"], job["Sequence"], true, dateTime);
         }
         if(jobToScanReportingIndex !== undefined) {
             const jobToScanReporting = jobs[jobToScanReportingIndex];
