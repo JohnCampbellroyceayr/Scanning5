@@ -16,11 +16,23 @@ export default function createNewLine(operation, seq, dept, resource, employee, 
     return line;
 }
 
+export function createNewLineGroupRunOrSetup(operation, seq, dept, resource, employee, dateObj) {
+    let line = '';
+    line += formatSymbolsAroundString(operation);
+    line += formatSymbolsAroundString(seq);
+    line += formatSymbolsAroundString(dateObj.date);
+    line += formatSymbolsAroundString(dateObj.time);
+    line += formatSymbolsAroundString(dept + " " + resource);
+    line += formatSymbolsAroundString(employee);
+    line += formatSymbolsAroundString("G");
+    return line;
+}
+
 function formatSymbolsAroundString(string) {
     return "<" + string + ">";
 }
 
-function getCurrentDateTime() {
+export function getCurrentDateTime() {
     let currentDateTime = new Date();
     let estDateTimeString = currentDateTime.toLocaleString("en-US", { timeZone: "America/New_York" });
     let estDateTime = new Date(estDateTimeString);
