@@ -2,8 +2,9 @@ import sqlQuery from "../../../databases/mysql.js";
 
 import startShift from "./operations/machineStartShift.js";
 import scanSetup from "./operations/setup.js";
-
 import setupNonReporting from "./operationsNotReporting/setup.js";
+
+import { getCurrentDateTime } from "./operationsNotReporting/notePadOperations/createNewLine.js";
 
 import { machineDeviceId, machineStatus, machineExistsOnDatabase } from "./getMachineValues.js";
 
@@ -25,19 +26,21 @@ export default async function setup(employee, dept, resource, jobs) {
             }
         }
     }
+    else {
+        return {
+            error: "Please input at least one job"
+        }
+    }
 
     try {
         if(status === "I") {
             await startShift(deviceId, dept, resource);
         }
-        for (let i = 0; i < jobs.length; i++) {
-            const job = jobs[i];
-            if(job["ReportingPoint"] == "Y") {
-                await scanSetup(deviceId, dept, resource, job["Job"], job["Sequence"]);
-            }
-            else {
-                await setupNonReporting(employee, dept, resource, job["Job"], job["Sequence"]);
-            }
+        if(jobs.length == 1) {
+            await scanOneJob(employee, deviceId, dept, resource, jobs[0]);
+        }
+        else {
+            await scanAllGroup(employee, deviceId, dept, resource, jobs);
         }
         return true;
     }
@@ -53,6 +56,55 @@ export default async function setup(employee, dept, resource, jobs) {
     }
 }
 
+function scanOneJob(employee, deviceId, dept, resource, job) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if(job["ReportingPoint"] == "Y") {
+                await scanSetup(deviceId, dept, resource, job["Job"], job["Sequence"]);
+            }
+            else {
+                await setupNonReporting(employee, dept, resource, job["Job"], job["Sequence"]);
+            }
+            resolve(true);
+        }
+        catch(error) {
+            reject(error);
+        }
+    })
+}
+
+
+async function scanAllGroup(employee, deviceId, dept, resource, jobs) {
+    try {
+        const dateTime = getCurrentDateTime();
+        const jobToScanReportingIndex = getFirstReportingSeqIndex(jobs);
+        for (let i = 0; i < jobs.length; i++) {
+            if(jobToScanReportingIndex !== i) {
+                const job = jobs[i];
+                await setupNonReporting(employee, dept, resource, job["Job"], job["Sequence"], true, dateTime);
+            }
+        }
+        if(jobToScanReportingIndex !== undefined) {
+            const jobToScanReporting = jobs[jobToScanReportingIndex];
+            await scanSetup(deviceId, dept, resource, jobToScanReporting["Job"], jobToScanReporting["Sequence"]);
+        }
+        return true;
+    }
+    catch(error) {
+        return {
+            error: error
+        }
+    }
+}
+
+function getFirstReportingSeqIndex(jobs) {
+    for (let i = 0; i < jobs.length; i++) {
+        const job = jobs[i];
+        if(job["ReportingPoint"] == "Y") {
+            return i;
+        }
+    }
+}
 
 async function setMachineOnDataBase(user, dept, res, deviceId, jobs) {
 

@@ -108,55 +108,6 @@ function getFirstReportingSeqIndex(jobs) {
     }
 }
 
-// function test123123() {
-//     const test1 = [
-//         {"ReportingPoint": "N"},
-//         {"ReportingPoint": "N"},
-//         {"ReportingPoint": "Y"},
-//         {"ReportingPoint": "N"},
-//     ]
-//     const test2 = [
-//         {"ReportingPoint": "N"},
-//         {"ReportingPoint": "N"},
-//         {"ReportingPoint": "N"},
-//         {"ReportingPoint": "N"},
-//     ]
-//     const test3 = [
-//         {"ReportingPoint": "N"},
-//         {"ReportingPoint": "Y"},
-//         {"ReportingPoint": "N"},
-//         {"ReportingPoint": "N"},
-//     ]
-//     console.log(getFirstReportingSeqIndex(test1));
-//     console.log(2);
-//     console.log(getFirstReportingSeqIndex(test2));
-//     console.log(undefined);
-//     console.log(getFirstReportingSeqIndex(test3));
-//     console.log(1);
-// }
-
-// test123123()
-
-async function scanAllLessThanTwoReportingSeq(employee, deviceId, dept, resource, jobs) {
-    try {
-        for (let i = 0; i < jobs.length; i++) {
-            const job = jobs[i];
-            if(job["ReportingPoint"] == "Y") {
-                await runSetup(deviceId, dept, resource, job["Job"], job["Sequence"]);
-            }
-            else {
-                await runNonReporting(employee, dept, resource, job["Job"], job["Sequence"]);
-            }
-        }
-        return true;
-    }
-    catch(error) {
-        return {
-            error: error
-        }
-    }
-}
-
 async function setMachineOnDataBase(user, dept, res, deviceId, jobs) {
 
     const machineExists = await machineExistsOnDatabase(dept, res);

@@ -1,7 +1,6 @@
 import updateNotePadWorkOrderLine from './notePadOperations/writeToNotePad.js';
 import createNewLine, { createNewLineGroupRunOrSetup } from './notePadOperations/createNewLine.js';
 
-
 export default function run(employee, departmentCode, resourceCode, workOrder, seqNumber, group = false, dateObj = false) {
     return new Promise(async (resolve, reject) => {
         try {

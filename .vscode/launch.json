@@ -11,7 +11,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}//src/requests/post/machine/run.js"
+            "program": "${workspaceFolder}//src/requests/post/machine/setup.js"
         }
     ]
 }
