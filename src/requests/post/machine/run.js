@@ -42,7 +42,7 @@ export default async function run(employee, dept, resource, jobs) {
             await scanOneJob(employee, deviceId, dept, resource, jobs[0]);
         }
         else {
-            await scanMultiJobRun(employee, deviceId, dept, resource, jobs);
+            await scanAllGroup(employee, deviceId, dept, resource, jobs);
         }
 
         return true;
@@ -76,16 +76,6 @@ function scanOneJob(employee, deviceId, dept, resource, job) {
     })
 }
 
-function scanMultiJobRun(employee, deviceId, dept, resource, jobs) {
-    const needToScanGroupInNotes = moreThanOneJobIsAReportingSeq(jobs);
-    if(needToScanGroupInNotes == false) {
-        return scanAllLessThanTwoReportingSeq(employee, deviceId, dept, resource, jobs);
-    }
-    else {
-        return scanAllGroup(employee, deviceId, dept, resource, jobs);
-    }
-}
-
 async function scanAllGroup(employee, deviceId, dept, resource, jobs) {
     try {
         const dateTime = getCurrentDateTime();
@@ -108,25 +98,6 @@ async function scanAllGroup(employee, deviceId, dept, resource, jobs) {
         }
     }
 }
-
-const jobs = [
-    {
-        "Job": "067836",
-        "Sequence": "16",
-        "ReportingPoint": "N",
-    },
-    {
-        "Job": "067836",
-        "Sequence": "10",
-        "ReportingPoint": "N",
-    },
-    {
-        "Job": "067857",
-        "Sequence": "10",
-        "ReportingPoint": "Y",
-    },
-]
-console.log(await run("02410", "WD", "LAS01", jobs));
 
 function getFirstReportingSeqIndex(jobs) {
     for (let i = 0; i < jobs.length; i++) {
@@ -183,22 +154,6 @@ async function scanAllLessThanTwoReportingSeq(employee, deviceId, dept, resource
         return {
             error: error
         }
-    }
-}
-
-function moreThanOneJobIsAReportingSeq(jobs) {
-    let numberReportingJobs = 0;
-    for (let i = 0; i < jobs.length; i++) {
-        const job = jobs[i];
-        if(job["ReportingPoint"] == "Y") {
-            numberReportingJobs++;
-        }
-    }
-    if(numberReportingJobs > 1) {
-        return true
-    }
-    else {
-        return false;
     }
 }
 
