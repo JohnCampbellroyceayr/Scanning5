@@ -36,3 +36,10 @@ export default function reportGood(deviceID, departmentCode, resourceCode, workO
         });       
     });
 }
+
+try {
+    await reportGood("QAREP", "WD", "LAS01", "067857", "10", "02410", "120-TEST", "1");
+}
+catch(error) {
+    console.log(error);
+}
