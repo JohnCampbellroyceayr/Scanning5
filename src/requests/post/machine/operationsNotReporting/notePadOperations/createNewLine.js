@@ -16,6 +16,24 @@ export default function createNewLine(operation, seq, dept, resource, employee, 
     return line;
 }
 
+export function createNewLineGoodOrScrapPieces(operation, seq, dept, resource, employee, numberOfPieces = null, scrapReasonCode = null) {
+    let line = '';
+    const dateObj = getCurrentDateTime();
+    line += formatSymbolsAroundString(operation);
+    line += formatSymbolsAroundString(dateObj.date);
+    line += formatSymbolsAroundString(dateObj.time);
+    line += formatSymbolsAroundString(dept + " " + resource);
+    line += formatSymbolsAroundString(employee);
+    if(numberOfPieces !== null) {
+        line += formatSymbolsAroundString(numberOfPieces);
+    }
+    if(scrapReasonCode !== null) {
+        line += formatSymbolsAroundString(scrapReasonCode);
+    }
+    line += formatSymbolsAroundString(seq);
+    return line;
+}
+
 export function createNewLineGroupRunOrSetup(operation, seq, dept, resource, employee, dateObj) {
     let line = '';
     line += formatSymbolsAroundString(operation);
