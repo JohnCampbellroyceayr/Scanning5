@@ -106,22 +106,17 @@ async function updateRecentMachinesWithNew(user, newRecentMachines) {
 
 function updateRecentMachines(recentMachines, dept, res) {
     recentMachines = recentMachines || [];
-    const today = new Date().toISOString().split('T')[0];
 
-    recentMachines = recentMachines.filter((machine) => {
-        const machineDate = new Date(machine.date);
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    let index = recentMachines.findIndex((machine) => machine.dept === dept && machine.res === res);
 
-        if (machine.dept === dept && machine.res === res && machineDate > thirtyDaysAgo) {
-            machine.date = today;
-            return true;
-        }
-        return machineDate > thirtyDaysAgo;
-    });
+    if (index !== -1) {
+        recentMachines.unshift(...recentMachines.splice(index,  1));
+    } else {
+        recentMachines.unshift({ dept, res });
+    }
 
-    if (!recentMachines.some((machine) => machine.dept === dept && machine.res === res)) {
-        recentMachines.push({ dept, res, date: today });
+    if (recentMachines.length >  4) {
+        recentMachines.pop();
     }
 
     return recentMachines;
@@ -130,13 +125,18 @@ function updateRecentMachines(recentMachines, dept, res) {
 
 // test('test recentMachines 1', () => {
 //     const recentMachinesTest = [
-//         { dept: "WD", res: "LAS01", date: "2024-02-14" },
-//         { dept: "ML", res: "DESLG", date: "2023-02-15" }
+//         { dept: "WD", res: "LAS01" },
+//         { dept: "ML", res: "DESLG" },
+//         { dept: "SF", res: "SFGRD" },
+//         { dept: "qw", res: "asdfsdf" },
 //     ]
 //     assert.deepEqual(
-//         updateRecentMachines(recentMachinesTest, "WD", "LAS01"),
+//         updateRecentMachines(recentMachinesTest, "W1", "LAS02"),
 //         [
-//             { dept: "WD", res: "LAS01", date: "2024-02-15" },
+//             { dept: "W1", res: "LAS02" },
+//             { dept: "WD", res: "LAS01" },
+//             { dept: "ML", res: "DESLG" },
+//             { dept: "SF", res: "SFGRD" },
 //         ]
 //     ); 
 // });
@@ -146,21 +146,39 @@ function updateRecentMachines(recentMachines, dept, res) {
 //     assert.deepEqual(
 //         updateRecentMachines(recentMachinesTest, "WD", "LAS01"),
 //         [
-//             { dept: "WD", res: "LAS01", date: "2024-02-15" }
+//             { dept: "WD", res: "LAS01" }
 //         ]
 //     ); 
 // });
 
 // test('test recentMachines 3', () => {
 //     const recentMachinesTest = [
-//         { dept: "WD", res: "LAS01", date: "2024-02-14" },
-//         { dept: "ML", res: "DESLG", date: "2024-02-15" }
+//         { dept: "WD", res: "LAS01" },
+//         { dept: "ML", res: "DESLG" }
 //     ]
 //     assert.deepEqual(
 //         updateRecentMachines(recentMachinesTest, "WD", "LAS01"),
 //         [
-//             { dept: "WD", res: "LAS01", date: "2024-02-15" },
-//             { dept: "ML", res: "DESLG", date: "2024-02-15" }
+//             { dept: "WD", res: "LAS01" },
+//             { dept: "ML", res: "DESLG" }
+//         ]
+//     ); 
+// });
+
+// test('test recentMachines 4', () => {
+//     const recentMachinesTest = [
+//         { dept: "ML", res: "DESLG" },
+//         { dept: "ML", res: "DESLG" },
+//         { dept: "WD", res: "LAS01" },
+//         { dept: "WD", res: "LAS01" },
+//     ]
+//     assert.deepEqual(
+//         updateRecentMachines(recentMachinesTest, "WD", "LAS01"),
+//         [
+//             { dept: "WD", res: "LAS01" },
+//             { dept: "ML", res: "DESLG" },
+//             { dept: "ML", res: "DESLG" },
+//             { dept: "WD", res: "LAS01" },
 //         ]
 //     ); 
 // });

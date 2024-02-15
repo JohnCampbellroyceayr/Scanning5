@@ -101,11 +101,9 @@ app.post('/api/getUser', async (req, res) => {
 app.post('/api/getUserRecentMachines', async (req, res) => {
 
     const user = req.body.id;
-    const recentMachines = getRecentMachines(user);
+    const recentMachines = await getRecentMachines(user);
 
-    res.json({
-        recentMachines: recentMachines
-    });
+    res.json(recentMachines);
 
 });
 

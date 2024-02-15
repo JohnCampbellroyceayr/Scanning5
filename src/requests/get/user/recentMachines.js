@@ -1,3 +1,5 @@
+import sqlQuery from "../../../databases/mysql.js";
+
 export default async function getRecentMachines(user) {
     try {
         const query = `
