@@ -7,6 +7,8 @@ import { machineDeviceId, machineStatus, machineExistsOnDatabase } from "./getMa
 import { userExists } from "../user/getUserValues.js";
 import getName from "../../get/user/userExists.js";
 
+import getRecentMachines from "../../get/user/recentMachines.js";
+
 export default async function setMachine(dept, resource, employee) {
     const status = await machineStatus(dept, resource);
     const deviceId = await machineDeviceId(dept, resource);
@@ -18,7 +20,8 @@ export default async function setMachine(dept, resource, employee) {
     }
 
     const setEmployeeResult = await setUserOnDataBase(employee, dept, resource, deviceId);
-    if(setEmployeeResult.error) {
+    const setRecentMachinesResult = await updateUserRecentMachines(employee, dept, resource);
+    if(setEmployeeResult.error || setRecentMachinesResult.error) {
         return {
             error: "Something went wrong with setting the employee"
         }
@@ -73,6 +76,94 @@ async function setMachineOnDataBase(user, dept, res, deviceId) {
     return result;
     
 }
+
+async function updateUserRecentMachines(user, dept, res) {
+    try {
+        const recentMachines = await getRecentMachines(user);
+        const newRecentMachines = updateRecentMachines(recentMachines, dept, res);
+        await updateRecentMachinesWithNew(user, newRecentMachines);
+    }
+    catch(error) {
+        console.log(error);
+        return {
+            error: error
+        }
+    }
+    return { error: false }
+}
+
+
+async function updateRecentMachinesWithNew(user, newRecentMachines) {
+    const recentMachinesJSON = JSON.stringify(newRecentMachines);
+    const query = `
+        UPDATE user SET recent_machines = ? WHERE number = ?;
+    `;
+    const result = await sqlQuery(query, [recentMachinesJSON, user]);
+    if(result.error) {
+        throw new Error(result.error);
+    }
+}
+
+function updateRecentMachines(recentMachines, dept, res) {
+    recentMachines = recentMachines || [];
+    const today = new Date().toISOString().split('T')[0];
+
+    recentMachines = recentMachines.filter((machine) => {
+        const machineDate = new Date(machine.date);
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+        if (machine.dept === dept && machine.res === res && machineDate > thirtyDaysAgo) {
+            machine.date = today;
+            return true;
+        }
+        return machineDate > thirtyDaysAgo;
+    });
+
+    if (!recentMachines.some((machine) => machine.dept === dept && machine.res === res)) {
+        recentMachines.push({ dept, res, date: today });
+    }
+
+    return recentMachines;
+}
+
+
+// test('test recentMachines 1', () => {
+//     const recentMachinesTest = [
+//         { dept: "WD", res: "LAS01", date: "2024-02-14" },
+//         { dept: "ML", res: "DESLG", date: "2023-02-15" }
+//     ]
+//     assert.deepEqual(
+//         updateRecentMachines(recentMachinesTest, "WD", "LAS01"),
+//         [
+//             { dept: "WD", res: "LAS01", date: "2024-02-15" },
+//         ]
+//     ); 
+// });
+
+// test('test recentMachines 2', () => {
+//     const recentMachinesTest = null;
+//     assert.deepEqual(
+//         updateRecentMachines(recentMachinesTest, "WD", "LAS01"),
+//         [
+//             { dept: "WD", res: "LAS01", date: "2024-02-15" }
+//         ]
+//     ); 
+// });
+
+// test('test recentMachines 3', () => {
+//     const recentMachinesTest = [
+//         { dept: "WD", res: "LAS01", date: "2024-02-14" },
+//         { dept: "ML", res: "DESLG", date: "2024-02-15" }
+//     ]
+//     assert.deepEqual(
+//         updateRecentMachines(recentMachinesTest, "WD", "LAS01"),
+//         [
+//             { dept: "WD", res: "LAS01", date: "2024-02-15" },
+//             { dept: "ML", res: "DESLG", date: "2024-02-15" }
+//         ]
+//     ); 
+// });
 
 async function setUserOnDataBase(user, dept, res) {
 

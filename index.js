@@ -36,6 +36,7 @@ import removeMachine from "./src/requests/post/user/removeMachine.js";
 const app = express();
 import cors from 'cors';
 import getUserMachines from "./src/requests/get/user/getUserMachines.js";
+import getRecentMachines from "./src/requests/get/user/recentMachines.js";
 
 app.use(cors());
 app.use(express.json());
@@ -95,6 +96,17 @@ app.post('/api/getUser', async (req, res) => {
         user: userObj,
         machines: machines
     });
+});
+
+app.post('/api/getUserRecentMachines', async (req, res) => {
+
+    const user = req.body.id;
+    const recentMachines = getRecentMachines(user);
+
+    res.json({
+        recentMachines: recentMachines
+    });
+
 });
 
 

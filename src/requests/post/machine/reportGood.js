@@ -97,17 +97,3 @@ function updateMachineJobs(machineJobs, job, quantity) {
         return [];
     }
 }
-
-// const job = [
-//     {
-//         "Job": "067836",
-//         "Sequence": 10,
-//         "GoodPieces": 1167,
-//         "PartNumber": "120-TEST",
-//         "PiecesNeeded": 999,
-//         "Machine Group": "LAS",
-//         "ReportingPoint": "Y",
-//         "Sequence Status": "C"
-//     }
-// ]
-// goodPieces("02410", "WD", "LAS01", job, [1]);
