@@ -15,12 +15,12 @@ async function display() {
 }
 
 function fillInFields(userData, jobs) {
-    document.querySelector("#Employee").innerHTML = EmployeeObj.number + " " + userData.user.name;
-    document.querySelector("#EmployeeStatus").innerHTML = userData.user.status;
+    document.querySelector("#employeeNumberName").innerHTML = EmployeeObj.number + " " + userData.user.name + " (Click to switch)";
+    // document.querySelector("#EmployeeStatus").innerHTML = userData.user.status;
     if(MachineObj.dept !== undefined && MachineObj.resource !== undefined) {
-        document.querySelector("#Machine").innerHTML = userData.machines.current.department + " " + userData.machines.current.resource;
-        document.querySelector("#MachineStatus").innerHTML = userData.machines.current.status;
-        document.querySelector("#Jobs").innerHTML = makeTable(jobs);
+        document.querySelector("#deptResource").innerHTML = userData.machines.current.department + " " + userData.machines.current.resource;
+        // document.querySelector("#MachineStatus").innerHTML = userData.machines.current.status;
+        // document.querySelector("#Jobs").innerHTML = makeTable(jobs);
     }
 }
 
@@ -45,6 +45,17 @@ function getJobsDisplayString(jobArr) {
         console.log(jobArr[i]);
         str += "W/O " + jobArr[i].Job;
         str += " Seq " + jobArr[i].Sequence;
+        str += '\n';
+    }
+    return str;
+}
+
+function confirmJobsDisplayMessage(jobsArr, initialMessage) {
+    let str = initialMessage + '\n';
+    for (let i = 0; i < jobsArr.length; i++) {
+        const job = jobsArr[i];
+        str += "W/O " + jobsArr[i].Job;
+        str += " Seq " + jobsArr[i].Sequence;
         str += '\n';
     }
     return str;

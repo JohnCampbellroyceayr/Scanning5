@@ -1,0 +1,28 @@
+#setMachine {
+    width: 100vw;
+    text-align: center;
+    padding-top: 100px;
+    display: none;
+}
+
+.btn-recentResource {
+    background-color: rgb(25, 107, 36);
+    color: white;
+    font-size: 25px;
+    padding: 15px;
+    padding-left: 35px;
+    padding-right: 35px;
+    border-radius: 10px;
+    margin: 5px;
+}
+
+#btn-setMachine {
+    background-color: rgb(25, 107, 36);
+    color: white;
+    font-size: 25px;
+    padding: 15px;
+    padding-left: 35px;
+    padding-right: 35px;
+    border-radius: 10px;    
+}
+

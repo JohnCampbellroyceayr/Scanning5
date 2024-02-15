@@ -5,32 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scanning</title>
 </head>
+<link rel="stylesheet" href="/frontend/style/login.css">
+<link rel="stylesheet" href="/frontend/style/setMachine.css">
+<link rel="stylesheet" href="/frontend/style/main.css">
 <body>
-    <div>
-        <div id="Employee"></div>
-        <div id="EmployeeStatus"></div>
-        <div id="Machine"></div>
-        <div id="MachineStatus"></div>
-        <div id="Jobs">
-
+    <div id="content">
+        <div class="logo">
+            <img src="images/logo.jpg" width="100%" height="100%">
+        </div>
+        <div class="statusBar">
+            <p id="displayCurrentUserText">Current User:</p>
+            <p id="employeeNumberName" onclick="employeeSignIn()"></p>
+            <br>
+            <p id="displayCurrentResourceText">Current Resource:</p>
+            <p id="deptResource"></p>
+        </div>
+        <div id="login">
+            <h1>Welcome</h1>
+            <h2>Please sign your employee number to start scanning</h2>
+            <br>
+            <button id="btn-login" onclick="employeeSignIn()">Login</button>
+        </div>
+        <div id="setMachine">
+            <h1>What resource are you setting up?</h1>
+            <h2>Recent Resources</h2>
+            <br>
+            <div id="recentResourceButtons"></div>
+            <h2>OR</h2>
+            <button id="btn-setMachine" onclick="setMachinePrompt()">Choose</button>
         </div>
     </div>
-    <button id="Johncampbell" onclick="employeeSignIn()">Employee Log in</button>
-    <button onclick="signOut()">Employee Logout</button>
-    <br>
-    <button onclick="setMachine()">Set Machine</button>
-    <button onclick="removeMachine()">Forget Machine</button>
-    <br>
-    <button onclick="setup()">Setup</button>
-    <button onclick="run()">Run</button>
-    <br>
-    <button onclick="pause()">Pause</button>
-    <button onclick="resume()">Resume</button>
-    <br>
-    <button onclick="goodPieces()">Good Pieces</button>
-    <button onclick="scrapPieces()">Scrap Pieces</button>
-    <br>
-    <button onclick="removeJob()">Remove Job</button>
 
 </body>
 
@@ -42,159 +46,32 @@
 
     }
 
-    function checkEmployee() {
-        if(EmployeeObj.number == undefined) {
-            alert("Employee is not signed in");
-            return false;
-        }
-        return true;
-    }
-    function checkMachine() {
-        if(MachineObj.dept == undefined || MachineObj.resource == undefined) {
-            alert("Machine is not signed in");
-            return false;
-        }
-        return true;
-    }
-
-    async function getMachineJobs() {
-        const url = 'http://192.168.0.19:2002/api/getMachineJobs';
-        
-        const obj = {
-            dept: MachineObj.dept,
-            resource: MachineObj.resource,
-        }
-
-        const result = await post(url, obj);
-
-        return result;
-    }
-
-    async function getCurrentJob(job, seq) {
-        const url = 'http://192.168.0.19:2002/api/checkCurrentJob';
-
-        const obj = {
-            dept: MachineObj.dept,
-            resource: MachineObj.resource,
-            job: job,
-            seq: seq
-        }
-        const result = await post(url, obj);
-        return result;
-    }
-
-    async function getAllJobs(jobs) {
-        if(jobs == null) {
-            jobs = [];
-        }
-        if(jobs.length == 1 && MachineObj.mulitiJobMachine == 'N') {
-            return jobs;
-        }
-        const url = 'http://192.168.0.19:2002/api/checkJob';
-        const jobStr = getJobsDisplayString(jobs);
-        const job = prompt("Current jobs: " + jobStr + "Enter Job", "");
-        
-        if(job == undefined || job == '') {
-            return jobs;
-        }
-        const obj = {
-            dept: MachineObj.dept,
-            resource: MachineObj.resource,
-            job: job
-        }
-        const result = await post(url, obj);
-        if(result.success == true) {
-            if(confirm(result.message)) {
-                jobs.push(result.args);
-                if(MachineObj.mulitiJobMachine == "Y") {
-                    return getAllJobs(jobs);
-                }
-                else {
-                    return jobs;
-                }
-            }
-            else {
-                if(MachineObj.mulitiJobMachine == "Y") {
-                    return getAllJobs(jobs);
-                }
-                else {
-                    return jobs;
-                }
-            }
-        }
-        else {
-            displayMessage(result);
-            return getAllJobs(jobs);
-        }
-    }
-    function checkJob(job) {
-        const obj = {
-            dept: MachineObj.dept,
-            resource: MachineObj.resource,
-            job: job
-        }
-        return post('http://192.168.0.19:2002/api/checkJob', obj);
-    }
-
-    async function getCurrentUser() {
-        const url = 'http://192.168.0.19:2002/api/getUser';
-
-        const obj = {
-            id: EmployeeObj.number
-        }
-        const result = await post(url, obj);
-        return result;
-    }
-
-    function confirmJobsDisplayMessage(jobsArr, initialMessage) {
-        let str = initialMessage + '\n';
-        for (let i = 0; i < jobsArr.length; i++) {
-            const job = jobsArr[i];
-            str += "W/O " + jobsArr[i].Job;
-            str += " Seq " + jobsArr[i].Sequence;
-            str += '\n';
-        }
-        return str;
-    }
-
-
-    function post(url, obj) {
-        return new Promise((resolve, reject) => {
-            fetch(url, {
-                method: 'POST', 
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    ...obj
-                }) 
-            })
-
-            .then(response => response.json())
-            .then(data => resolve(data))
-            .catch((error) => {
-                console.error('Error:', error);
-                resolve(error)
-            });
-        })
-    }
 </script>
-<script src="message.js"></script>
-<script src="setup.js"></script>
-<script src="run.js"></script>
-<script src="pause.js"></script>
-<script src="resume.js"></script>
-<script src="goodPieces.js"></script>
-<script src="scrapPieces.js"></script>
-<script src="setMachine.js"></script>
-<script src="signIn.js"></script>
-<script src="signOut.js"></script>
-<script src="removeJob.js"></script>
-<script src="removeMachine.js"></script>
-<script src="getGoodScrapJobs.js"></script>
+<script src="messages/message.js"></script>
+
+<script src="requests/checkJob.js"></script>
+<script src="requests/getJobs.js"></script>
+<script src="requests/postRequest.js"></script>
+<script src="requests/user.js"></script>
+
+<script src="validation/checkLocalUserMachineValues.js"></script>
+
+<script src="operations/setup.js"></script>
+<script src="operations/run.js"></script>
+<script src="operations/pause.js"></script>
+<script src="operations/resume.js"></script>
+<script src="operations/goodPieces.js"></script>
+<script src="operations/scrapPieces.js"></script>
+<script src="operations/setMachine.js"></script>
+<script src="operations/signIn.js"></script>
+<script src="operations/signOut.js"></script>
+<script src="operations/removeJob.js"></script>
+<script src="operations/removeMachine.js"></script>
+<script src="operations/getGoodScrapJobs.js"></script>
+
 <script>
 
-    // display();
+    const contentDiv = document.getElementById("content");
 
 </script>
 

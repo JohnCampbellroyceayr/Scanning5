@@ -1,0 +1,44 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+#content {
+    overflow: hidden;
+}
+
+.logo {
+    width: 400px;
+    height: calc(400px / 6);
+    background-color: black;
+    margin: 10px;
+}
+
+.statusBar {
+    font-size: 20px;
+    margin: 10px;
+    display: none;
+}
+
+#displayCurrentUserText {
+    display: inline-block;
+    width: 200px;
+}
+
+#employeeNumberName {
+    display: inline-block;
+    background-color: #156082;
+    cursor: pointer;
+    color: white;
+    padding: 10px;
+}
+
+#displayCurrentResourceText {
+    display: inline-block;
+    width: 200px;
+}
+
+#deptResource {
+    display: inline-block;
+    padding: 10px;
+}
