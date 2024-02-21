@@ -1,7 +1,7 @@
 async function employeeSignIn() {
     const url = 'http://192.168.0.19:2002/api/employeeLogin';
     const obj = {
-        id: prompt("Employee ID", "")
+        id: prompt("Employee ID", "", "Hello", "By")
     }
     if(obj.id == undefined) {
         return ;
