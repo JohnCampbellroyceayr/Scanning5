@@ -6,6 +6,7 @@
     <title>Scanning</title>
 </head>
 <link rel="stylesheet" href="/frontend/style/login.css">
+<link rel="stylesheet" href="/frontend/style/loginManuel.css">
 <link rel="stylesheet" href="/frontend/style/setMachine.css">
 <link rel="stylesheet" href="/frontend/style/main.css">
 <body>
@@ -24,9 +25,34 @@
         <div id="login">
             <h1>Welcome</h1>
             <h2>Please scan your key fob to report on a job</h2>
+            <h2>Or click <button id="btn-login" onclick="loadLoginManual()">Here</button> to sign in with your employee number</h2>
             <br>
-            <button id="btn-login" onclick="employeeSignIn()">Login</button>
         </div>
+
+        <div id="loginManual">
+            <h1>Recent Logins</h1>
+            <div id="recentLoginButtons">
+
+            </div>
+            <br>
+            <h3>
+                <div class="text-for-employee-input">
+                    Employee Code:
+                </div>
+                <input id="employeeUserNameInput">
+                <div id="nameOfPotentialSignIn">
+            </h3>
+            <h3 id="passwordFieldLoginManual">
+                <div class="text-for-employee-input">
+                    Password:
+                </div>
+                <input id="passwordFieldLoginInput" type="password">
+            </h3>
+            <div class="text-for-employee-input"></div>
+            <button id="btn-signin" onclick="employeeSignIn()">Sign in</button>
+
+        </div>
+
         <div id="setMachine">
             <h1>What resource are you setting up?</h1>
             <h2>Recent Resources</h2>

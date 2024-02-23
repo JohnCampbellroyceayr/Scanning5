@@ -1,0 +1,47 @@
+#loginManual {
+    display: none;
+}
+#employeeUserNameInput {
+    display: inline-block;
+}
+#passwordFieldLoginManual {
+    display: none;
+}
+#passwordFieldLoginInput {
+}
+
+.recentLoginButtons {
+    background-color: #156082;
+    color: white;
+    font-size: 20px;
+    padding: 5px;
+    padding-left: 35px;
+    padding-right: 35px;
+    border-radius: 10px;
+    margin: 2px;
+}
+
+#loginManual #btn-signin {
+    background-color: #156082;
+    color: white;
+    font-size: 20px;
+    padding: 5px;
+    padding-left: 35px;
+    padding-right: 35px;
+    border-radius: 10px;
+    margin: 2px;
+}
+
+#loginManual .text-for-employee-input {
+    font-size: 20px;
+    display: inline-block;
+    width: 150px;
+}
+
+#loginManual input {
+    font-size: 20px;
+}
+
+#loginManual #nameOfPotentialSignIn {
+    display: inline-block;
+}

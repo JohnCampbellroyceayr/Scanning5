@@ -4,6 +4,7 @@ import fs from 'fs';
 // import endShift from "./src/requests/post/operations/machineEndShift.js";
 
 import getName from "./src/requests/get/user/userExists.js";
+import getUserPassword from "./src/requests/get/user/userHasPassword.js";
 import activateUser from "./src/requests/post/user/userActivate.js";
 
 import deactivateUser from "./src/requests/post/user/userSignOut.js";
@@ -107,25 +108,53 @@ app.post('/api/getUserRecentMachines', async (req, res) => {
 
 });
 
+app.post('/api/employeeHasPassword', async (req, res) => {
+
+    if(!validParams(req.body, "employeeHasPassword")) { res.json(newMessage("Invalid Params", false, true)); return ;}
+
+    const id = req.body.id;
+    const password = await getUserPassword(id);
+
+    let hasPassword = false;
+    let name = undefined;
+    
+    if(password !== null) {
+        hasPassword = true;
+        name = await getName(id);
+    }
+
+    res.json({
+        password: hasPassword,
+        name: name
+    })
+});
 
 app.post('/api/employeeLogin', async (req, res) => {
 
     if(!validParams(req.body, "employeeLogin")) { res.json(newMessage("Invalid Params", false, true)); return ;}
 
     const id = req.body.id;
+    const password = req.body.password;
+
     const name = await getName(id);
+    const correctPassword = await getUserPassword(id);
 
     if(name == null) {
         res.json(newMessage("Employee Number not found", false));
     }
     else {
-        const result = activateUser(id, name);
-        if(result.error) {
-            res.json(newMessage("An Error occured", false, true));
+        if(correctPassword == null || password == correctPassword) {
+            const result = activateUser(id, name);
+            if(result.error) {
+                res.json(newMessage("An Error occured", false, true));
+            }
+            else {
+                const message = `${id} ${name} was successfully signed in`;
+                res.json(newMessage(message, true, false, {name: name}));
+            }
         }
         else {
-            const message = `${id} ${name} was successfully signed in`;
-            res.json(newMessage(message));
+            res.json(newMessage("Incorrect creds", false));
         }
     }
 });
@@ -141,7 +170,7 @@ app.post('/api/setMachine', async (req, res) => {
     const validEmployee = await getName(employee);
     const validMachine = await machineExists(dept, resource);
 
-    if(validEmployee == null || validMachine == null) {
+    if(validEmployee == null || validMachine == null) { 
         if(validMachine == null) {
             res.json(newMessage(`Unable to find resource ${dept} ${resource}`, false));
         }
