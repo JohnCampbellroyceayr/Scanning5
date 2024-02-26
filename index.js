@@ -34,14 +34,24 @@ import machineExists from "./src/requests/get/machine/machineExists.js";
 import removeJob from "./src/requests/post/machine/removeJob.js";
 import removeMachine from "./src/requests/post/user/removeMachine.js";
 
-const app = express();
-import cors from 'cors';
 import getUserMachines from "./src/requests/get/user/getUserMachines.js";
 import getRecentMachines from "./src/requests/get/user/recentMachines.js";
+
+import getDashboard from "./src/requests/get/dashboard/dashboard.js";
+
+const app = express();
+import cors from 'cors';
 
 app.use(cors());
 app.use(express.json());
 
+
+app.post("/api/dashboard", async (req, res) => {
+    const id = req.body.id;
+    const dashboard = await getDashboard(id);
+    res.json(dashboard)
+
+})
 
 app.post('/api/checkJob', async (req, res) => {
 

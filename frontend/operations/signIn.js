@@ -45,7 +45,8 @@ async function employeeSignIn(user = null) {
         passwordInput.value = '';
         putSuccessfulLoginInLocalStorage(user, result.args.name);
         displayMessage(result);
-        prepareDashboardForSetMachine();
+        prepareDashboard();
+        updateDashBoard(user);
         setTimeout(() => {
             display();
         }, 200);
@@ -76,7 +77,7 @@ function addEmployeeNumberToArray(employeeNumber, employeeName, arr) {
             number: employeeNumber,
             name: employeeName
         });
-        if (arrWithOutEmployee.length >= 4) {
+        if (arrWithOutEmployee.length >= 5) {
             arrWithOutEmployee.pop();
         }
         return arrWithOutEmployee;
@@ -90,11 +91,9 @@ function addEmployeeNumberToArray(employeeNumber, employeeName, arr) {
 }
 
 
-function prepareDashboardForSetMachine() {
-    document.querySelector(".statusBar").style.display = "block";
-    document.querySelector("#login").style.display = "none";
-    document.querySelector("#setMachine").style.display = "block";
-    prepareSetupLoadRecentResources();
+function prepareDashboard() {
+    document.querySelector("#loginManual").style.display = "none";
+    document.querySelector("#dashboard").style.display = "block";
 }
 
 function loadLoginManual() {
