@@ -24,12 +24,12 @@
             <p id="deptResource"></p>
         </div>
 
-        <div id="login">
+        <!-- <div id="login">
             <h1>Welcome</h1>
             <h2>Please scan your key fob to report on a job</h2>
             <h2>Or click <button id="btn-login" onclick="loadLoginManual()">Here</button> to sign in with your employee number</h2>
             <br>
-        </div>
+        </div> -->
 
         <div id="loginManual">
             <h1>Recent Logins</h1>
@@ -55,18 +55,40 @@
         </div>
 
         <div id="dashboard">
-            <div id="activeResources">
+            <div id="name-container">
+                <div id="name">
+    
+                </div>
+            </div>
+            <div id="header">
+                <button class="header-btn">
+                    Done For the Day
+                    <br>
+                    End Shift
+                </button>
+                <button class="header-btn" style="float: right;">
+                    Done For Now
+                </button>
+            </div>
+            <h1>Recent Resources</h1>
+            <div id="recentResources">
 
             </div>
+            <h1>Active Resources</h1>
+            <table id="activeResources">
+
+            </table>
         </div>
 
+
     </div>
+
 
 </body>
 
 <script>
     let EmployeeObj = {
-
+        number: "02410"
     }
     let MachineObj = {
 

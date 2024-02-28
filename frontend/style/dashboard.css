@@ -1,33 +1,114 @@
 #dashboard {
-    display: none;
+    /* display: none; */
+    background-color: #272b28;
 }
+
+
+#dashboard h1 {
+    text-align: center;
+    color: white;
+}
+
+#name-container {
+    display: block;
+    height: 75px;
+}
+
+#name {
+    color: white;
+    font-size: 25px;
+    padding: 20px;
+    float: right;
+}
+
+#recentResources {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    text-align: center;
+    width: 50%;
+    margin-left: 25%;
+}
+
+#header .header-btn {
+    padding: 20px;
+    font-size: 20px;
+    border-radius: 10px;
+    background-color: #156082;
+    color: white;
+}
+
+#recentResources .recentResourceButton {
+    padding: 10px;
+    margin: 5px;
+    font-size: 20px;
+    background-color: #196B24;
+    color: white;
+}
+
 
 #activeResources {
     background-color: black;
 }
 
-.row {
-    display: flex;
+#activeResources tr td button {
+    text-transform: uppercase;
+    margin: 1px;
+    border-radius: 6px;
 }
 
-.btnOperation {
-    font-size: 20px;
+#activeResources tr td button:disabled {
+    background-color: gray;
+    color: black;
+}
+
+.btnOperationDefault {
+    padding: 5px;
+    background-color: #E97132;
+    width: 90px;
+    color: white;
+}
+
+.btnOperationStopJob {
+    padding: 5px;
+    background-color: #E97132;
+    width: 180px;
+    color: white;
+}
+
+.btnOperationEndResource {
+    background-color: #BC49B0;
     padding: 10px;
+    color: white;
 }
 
 .cell {
-    display: inline-block;
-    /* padding: 5px; */
     border: 1px solid gray;
-    min-height: 100%;
-    position: relative;
-    width: 200px;
     text-align: center;
 }
 
-.cell .text {
+.text {
+    text-transform: uppercase;
+    font-size: 15px;
+}
+
+#activeResources {
+    table-layout: auto;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#activeResources td {
+    width: auto;
+}
+
+#activeResources tr td {
+    color: white;
+    text-align: center;
+}
+
+#activeResources tr td .text {
     display: inline-block;
-    width: 85%;
+    /* width: 85%; */
     border-radius: 5px;
     background-color: #196B24;
     color: white;

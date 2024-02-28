@@ -1,12 +1,53 @@
 async function updateDashBoard(employeeNumber) {
+    const dashboard = await getDashBoardFromServer(employeeNumber);
+    setEmployeeGreeting(dashboard);
+    createActiveResourceHTML(dashboard);
+    createRecentResourcesHTML(dashboard);
+}
+
+function setEmployeeGreeting(dashboard) {
+    const employee = dashboard.employee[0];
+    const name = `HELLO, ${employee.name}`;
+    const container = document.getElementById("name");
+    container.innerHTML = name;
+}
+
+async function getDashBoardFromServer(employeeNumber) {
     const obj = { id: employeeNumber };
     const url = 'http://192.168.0.19:2002/api/dashboard';
     const result = await post(url, obj);
-    createActiveResourceHTML(result);
-    console.log(result);
+    return result;
 }
 
-async function createActiveResourceHTML(dashboardObj) {
+function createRecentResourcesHTML(dashboardObj) {
+    let container = document.getElementById('recentResources');
+    container.innerHTML = "";
+    
+    try {
+        const recentMachines = dashboardObj.employee[0].recent_machines;
+        for (let i = 0; i < recentMachines.length; i++) {
+            const machine = recentMachines[i];
+            const html = createRecentMachineButton(machine);
+            container.append(html);
+        }
+        console.log(recentMachines);
+    }
+    catch {
+
+    }
+}
+
+function createRecentMachineButton(machine) {
+    let button = document.createElement('button');
+    
+    const text = `${machine.dept} ${machine.res}`;
+    button.innerHTML = text;
+    button.className = "recentResourceButton";
+
+    return button;
+}
+
+function createActiveResourceHTML(dashboardObj) {
 
     let container = document.getElementById('activeResources');
     container.innerHTML = "";
@@ -19,31 +60,34 @@ async function createActiveResourceHTML(dashboardObj) {
         const machineRow = new MachineRowHTML(machine);
         container.appendChild(machineRow);
     });
-    
+
+    const newRow = new MachineRowHTML({});
+    container.appendChild(newRow);
 
 }
 
 class MachineHeaderHTML {
     constructor() {
-        const container = document.createElement('div');
-                
-        container.appendChild(this.createCell("Resource Name"));
-        container.appendChild(this.createCell("Job"));
-        container.appendChild(this.createCell("Part"));
-        container.appendChild(this.createCell("Qty Good / Qty Req"));
-        container.appendChild(this.createCell("Current Status"));
+        const container = document.createElement('tr');
+        // container.classList.add("row");
+
+        container.appendChild(this.createCell("Resource<br>Name"));
+        container.appendChild(this.createCell("Job<br>#"));
+        container.appendChild(this.createCell("Part<br>#"));
+        container.appendChild(this.createCell("Qty Good <br>/<br> Qty Req"));
+        container.appendChild(this.createCell("Current<br>Status"));
         container.appendChild(this.createCell("Change Status"));
         container.appendChild(this.createCell("Report Pieces"));
+        container.appendChild(this.createCell("End<br>Resource"));
 
         return container;
     }
-    createCell(text) {
-        let cell = document.createElement('div');
+    createCell(content) {
+        let cell = document.createElement('td');
         cell.classList.add("cell");
         let textDiv = document.createElement('div');
-        textDiv.classList.add("text");
-        let textNode = document.createTextNode(text);
-        textDiv.appendChild(textNode);
+        textDiv.classList.add("headerText");
+        textDiv.innerHTML = content;
         cell.appendChild(textDiv);
         return cell;
     }
@@ -55,84 +99,148 @@ class MachineRowHTML {
         return this.createCell(text);
     }
     createJobHTML(jobs) {
-        if(jobs == null) {return this.createCell("+"); };
-        const text = (jobs.length == 1) ? jobs[0].Job : "Group";
-        return this.createCell(text);
+        if(jobs == null || jobs.length == 0) {return this.createCell("+"); };
+        if(jobs.length == 1) {
+            return this.createCellNoPadding(jobs[0].Job);
+        }
+        else {
+            return this.createCell("Group");
+        }
     }
     createPartHTML(jobs) {
-        if(jobs == null) {return this.createCell("NONE"); };
-        const text = (jobs.length == 1) ? jobs[0].PartNumber : "Group";
-        return this.createCell(text);
+        if(jobs == null || jobs.length == 0) {return this.createCellNoPadding(""); };
+        if(jobs.length == 1) {
+            return this.createCellNoPadding(jobs[0].PartNumber);
+        }
+        else {
+            return this.createCell("Group");
+        }
     }
     createQtysHTML(jobs) {
-        if(jobs == null) {return this.createCell("NONE"); };
+        if(jobs == null || jobs.length == 0) {return this.createCellNoPadding(""); };
         console.log(jobs);
         if(jobs.length == 1) {
             const qtyGood = jobs[0].GoodPieces;
             const qtyNeeded = jobs[0].PiecesNeeded;
             const text = `${qtyGood} / ${qtyNeeded}`;
-            return this.createCell(text);
+            return this.createCellNoPadding(text);
         }
         else {
-            return this.createCell("temp group");   
+            return this.createCellNoPadding("temp group");   
+        }   
+    }
+
+    createStatusHTML(status) {
+        let color;
+        switch (status) {
+            case "Run":
+                return this.createCell("Run", "#196B24");
+            case "Setup":
+                return this.createCell("Setup", "#E97132");
+            default:
+                return this.createCell("Stopped", "#0F9ED5");
         }
     }
-    createChangeStatusHTML(status) {
-        let cell = document.createElement('div');
+
+    createChangeStatusHTML(status, jobs) {
+        let cell = document.createElement('td');
         cell.classList.add("cell");
-        cell.appendChild(this.createButton("Setup", "btnOperation"));
-        cell.appendChild(this.createButton("Run", "btnOperation"));
-        cell.appendChild(this.createButton("Pause", "btnOperation"));
-        cell.appendChild(this.createButton("Resume", "btnOperation"));
-        cell.appendChild(this.createButton("Stop", "btnOperation"));
+        const setupDisabled = (status == "Idle" || status == "Setup") ? true : false;
+        const runDisabled = (status == "Idle" || status == "Run") ? true : false;
+        const pauseDisabled = (status == "Idle" || status.includes("Paused")) ? true : false;
+        const resumeDisabled = (status == "Idle" || !status.includes("Paused")) ? true : false;
+        if(!(jobs == null || jobs.length == 0)) {
+            cell.appendChild(this.createButton("Setup", "btnOperationDefault", setupDisabled));
+            cell.appendChild(this.createButton("Run", "btnOperationDefault", runDisabled, "#196B24"));
+            cell.appendChild(document.createElement('br'));
+            cell.appendChild(this.createButton("Pause", "btnOperationDefault", pauseDisabled, "#0F9ED5"));
+            cell.appendChild(this.createButton("Resume", "btnOperationDefault", resumeDisabled));
+            cell.appendChild(document.createElement('br'));
+            cell.appendChild(this.createButton("Stop Job", "btnOperationStopJob"));
+        }
         return cell;
     }
 
     createReportPiecesHTML(jobs) {
-        let cell = document.createElement('div');
+        let cell = document.createElement('td');
         cell.classList.add("cell");
-        cell.appendChild(this.createButton("Good", "btnOperation"));
-        cell.appendChild(this.createButton("Scrap", "btnOperation"));
+        if(!(jobs == null || jobs.length == 0)) {
+            cell.appendChild(this.createButton("Good", "btnOperationDefault", false, "#196B24"));
+            cell.appendChild(document.createElement('br'));
+            cell.appendChild(this.createButton("Scrap", "btnOperationDefault"));
+        }
         return cell;
     }
 
-    createButton(text, className) {
+    createEndResourceHTML(jobs) {
+        let cell = document.createElement('td');
+        cell.classList.add("cell");
+        cell.appendChild(this.createButton("End<br>Resource", "btnOperationEndResource"));
+        return cell;
+    }
+
+    createButton(text, className, disabled = false, backgroundColor = undefined) {
         let button = document.createElement('button');
         button.className = className;
+        button.disabled = disabled;
         button.innerHTML = text;
+        if(backgroundColor !== undefined && disabled === false) {
+            button.style.backgroundColor = backgroundColor;
+        }
         return button;
-    }
-    createStatusHTML(status) {
-        return this.createCell(status);
     }
     constructor(machine) {
 
-        const container = document.createElement('div');
-        container.classList.add("row");
-        const resourceName = this.createResourceNameHTML(machine.department, machine.resource);
-        const jobs = this.createJobHTML(machine.jobs);
-        const parts = this.createPartHTML(machine.jobs);
-        const qty = this.createQtysHTML(machine.jobs);
-        const status = this.createStatusHTML(machine.status);
-        const changeStatus = this.createChangeStatusHTML(machine.status);
-        const reportPieces = this.createReportPiecesHTML();
-        container.appendChild(resourceName);
-        container.appendChild(jobs);
-        container.appendChild(parts);
-        container.appendChild(qty);
-        container.appendChild(status);
-        container.appendChild(changeStatus);
-        container.appendChild(reportPieces);
-
-        return container;
+        const container = document.createElement('tr');
+        // container.classList.add("row");
+        if(machine.department == undefined || machine.resource == undefined) {
+            container.appendChild(this.createCell("+"));
+            container.appendChild(this.createCellNoPadding(""));
+            container.appendChild(this.createCellNoPadding(""));
+            container.appendChild(this.createCellNoPadding(""));
+            container.appendChild(this.createCellNoPadding(""));
+            container.appendChild(this.createCellNoPadding(""));
+            container.appendChild(this.createCellNoPadding(""));
+            container.appendChild(this.createCellNoPadding(""));
+            return container;
+        }
+        else {
+            const resourceName = this.createResourceNameHTML(machine.department, machine.resource);
+            const jobs = this.createJobHTML(machine.jobs);
+            const parts = this.createPartHTML(machine.jobs);
+            const qty = this.createQtysHTML(machine.jobs);
+            const status = this.createStatusHTML(machine.status);
+            const changeStatus = this.createChangeStatusHTML(machine.status, machine.jobs);
+            const reportPieces = this.createReportPiecesHTML(machine.jobs);
+            const endResource = this.createEndResourceHTML();
+            container.appendChild(resourceName);
+            container.appendChild(jobs);
+            container.appendChild(parts);
+            container.appendChild(qty);
+            container.appendChild(status);
+            container.appendChild(changeStatus);
+            container.appendChild(reportPieces);
+            container.appendChild(endResource);
+    
+            return container;
+        }
 
     }
-    createCell(content) {
-        let cell = document.createElement('div');
+    createCellNoPadding(content) {
+        let cell = document.createElement('td');
+        cell.className = "cell";
+        cell.innerHTML = content;
+        return cell;
+    }
+    createCell(content, backgroundColor) {
+        let cell = document.createElement('td');
         cell.classList.add("cell");
         let textDiv = document.createElement('div');
         textDiv.classList.add("text");
         textDiv.innerHTML = content;
+        if(backgroundColor !== undefined) {
+            textDiv.style.backgroundColor = backgroundColor;
+        }
         cell.appendChild(textDiv);
         return cell;
     }
@@ -149,3 +257,5 @@ function createMachineRow(machine) {
 function createResourceNameHTML(name) {
 
 }
+
+updateDashBoard("02410");
