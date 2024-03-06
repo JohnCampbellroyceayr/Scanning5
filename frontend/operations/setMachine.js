@@ -1,33 +1,3 @@
-async function prepareSetupLoadRecentResources() {
-    const url = 'http://192.168.0.19:2002/api/getUserRecentMachines';
-    const sendObj = {
-        id: EmployeeObj.number
-    }
-    const result = await post(url, sendObj);
-    let container = document.getElementById('recentResourceButtons');
-    container.innerHTML = "";
-    if(result != null) {
-
-        result.forEach(function(obj) {
-            let button = document.createElement('button');
-            
-            button.className = 'btn-recentResource';
-            
-            button.onclick = function() {
-                setMachine(obj.dept, obj.res);
-            };
-
-            let textNode = document.createTextNode(obj.dept + ' ' + obj.res);
-            button.appendChild(textNode);
-            
-            container.appendChild(button);
-
-            let br = document.createElement('br');
-            container.appendChild(br);
-        });
-    }
-}
-
 async function setMachinePrompt() {
     if(!checkEmployee()) return ;
     let machine = prompt("Enter Machine", "");
@@ -46,6 +16,7 @@ async function setMachinePrompt() {
 }
 
 async function setMachine(dept, resource) {
+    console.log(dept, resource);
     const url = 'http://192.168.0.19:2002/api/setMachine';
     const obj = {
         dept: dept,
@@ -58,8 +29,7 @@ async function setMachine(dept, resource) {
         MachineObj.resource = obj.resource;
         MachineObj.mulitiJobMachine = result.args.mulitiJobMachine;
     }
-    displayMessage(result);
-    setTimeout(() => {
-        display();
-    }, 200);
+    closeMessage();
+    displayMessage(result, () => closeMessage(), "OK");
+    updateDashBoard(EmployeeObj.number);
 }

@@ -1,0 +1,63 @@
+#backscreen {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    background-color: rgba(50, 50, 50, 0.75);
+    display: none;
+}
+
+#message {
+    width: 500px;
+    height: 300px;
+    position: absolute;
+    top: calc(50vh - (300px / 2));
+    left: calc(50vw - (500px / 2));
+    background-color: white;
+    border-radius: 7px;
+    border: 2px solid black;
+    display: none;
+}
+
+#message #exit-btn {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    right: 5px;
+    cursor: pointer;
+}
+
+#message #exit-btn .bar {
+    width: 5px;
+    height: 40px;
+    background-color: black;
+    position: relative;
+    left: 17px;
+}
+
+#message #exit-btn #b1 {
+    transform: rotate(45deg);
+}
+#message #exit-btn #b2 {
+    transform: rotate(-45deg);
+    top: -40px;
+}
+
+#message h1 {
+    padding: 20px;
+    border-bottom: 1px solid rgba(50, 50, 50, 0.5);
+}
+
+
+#message p {
+    padding: 20px;
+    height: 90px;
+}
+
+#message button {
+    float: right;
+    padding: 20px;
+    margin: 20px;
+    /* border-radius: 10px; */
+}

@@ -9,6 +9,8 @@
 <link rel="stylesheet" href="/frontend/style/loginManuel.css">
 <link rel="stylesheet" href="/frontend/style/setMachine.css">
 <link rel="stylesheet" href="/frontend/style/main.css">
+<link rel="stylesheet" href="/frontend/style/message.css">
+<link rel="stylesheet" href="/frontend/style/input.css">
 <link rel="stylesheet" href="/frontend/style/dashboard.css">
 <body>
     <div id="content">
@@ -61,12 +63,12 @@
                 </div>
             </div>
             <div id="header">
-                <button class="header-btn">
+                <button class="header-btn" id="EndShiftBtn">
                     Done For the Day
                     <br>
                     End Shift
                 </button>
-                <button class="header-btn" style="float: right;">
+                <button class="header-btn" style="float: right;" onclick="switchBackToLogin()">
                     Done For Now
                 </button>
             </div>
@@ -82,6 +84,28 @@
 
 
     </div>
+    <div id="backscreen" onclick="closeMessage()">
+        
+    </div>
+    <div id="message">
+        <div id="exit-btn" onclick="closeMessage()">
+            <div class="bar" id="b1"></div>
+            <div class="bar" id="b2"></div>
+        </div>
+        <h1></h1>
+        <p></p>
+        <button></button>
+    </div>
+
+    <div id="input">
+        <div id="exit-btn" onclick="closeMessage()">
+            <div class="bar" id="b1"></div>
+            <div class="bar" id="b2"></div>
+        </div>
+        <h1>Hello</h1>
+        <input type="text" id="InputText">
+        <button>ENTER</button>
+    </div>
 
 
 </body>
@@ -96,6 +120,7 @@
 
 </script>
 <script src="messages/message.js"></script>
+<script src="messages/input.js"></script>
 
 <script src="requests/checkJob.js"></script>
 <script src="requests/getJobs.js"></script>

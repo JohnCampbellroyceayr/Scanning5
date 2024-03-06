@@ -44,15 +44,11 @@ async function employeeSignIn(user = null) {
         EmployeeObj.number = obj.id; 
         passwordInput.value = '';
         putSuccessfulLoginInLocalStorage(user, result.args.name);
-        displayMessage(result);
         prepareDashboard();
         updateDashBoard(user);
-        setTimeout(() => {
-            display();
-        }, 200);
     }
     else {
-        displayMessage(result);
+        displayMessage(result, () => closeMessage(), "Try Again");
     }
 
 }

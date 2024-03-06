@@ -1,26 +1,14 @@
-async function removeMachine() {
-    if(!checkEmployee()) return ;
-    if(!checkMachine()) return ;
-    const userObj = await getCurrentUser();
-    const machineArr = [userObj.machines.current, ...userObj.machines.other];
-
-    console.log(userObj.machines);
-    console.log(machineArr);
-
+async function removeMachine(dept, res) {
     const url = 'http://192.168.0.19:2002/api/removeMachine';
     
-    for (let i = 0; i < machineArr.length; i++) {
-        const machine = machineArr[i];
-        if(confirm(displayRemoveMachine(machine))) {
-            const obj = {
-                dept: machine.department,
-                resource: machine.resource,
-                user: EmployeeObj.number
-            }
-            const result = await post(url, obj);
-            displayMessage(result);
-        }       
+    const obj = {
+        dept: dept,
+        resource: res,
+        user: EmployeeObj.number
     }
+    const result = await post(url, obj);
+    displayMessage(result, () => closeMessage(), "OK");
+    updateDashBoard(EmployeeObj.number);
 }
 
 function displayRemoveMachine(machine) {

@@ -1,8 +1,17 @@
 async function updateDashBoard(employeeNumber) {
     const dashboard = await getDashBoardFromServer(employeeNumber);
+    setEndShiftBtn(employeeNumber)
     setEmployeeGreeting(dashboard);
     createActiveResourceHTML(dashboard);
     createRecentResourcesHTML(dashboard);
+}
+
+function setEndShiftBtn(employeeNumber) {
+    const button = document.getElementById("EndShiftBtn");
+    button.onclick = async () => {
+        await signOut(employeeNumber);
+        switchBackToLogin();
+    }
 }
 
 function setEmployeeGreeting(dashboard) {
@@ -30,7 +39,6 @@ function createRecentResourcesHTML(dashboardObj) {
             const html = createRecentMachineButton(machine);
             container.append(html);
         }
-        console.log(recentMachines);
     }
     catch {
 
@@ -42,6 +50,8 @@ function createRecentMachineButton(machine) {
     
     const text = `${machine.dept} ${machine.res}`;
     button.innerHTML = text;
+    const onclickFunc = () => setMachine(machine.dept, machine.res);
+    button.onclick = onclickFunc;
     button.className = "recentResourceButton";
 
     return button;
@@ -118,7 +128,6 @@ class MachineRowHTML {
     }
     createQtysHTML(jobs) {
         if(jobs == null || jobs.length == 0) {return this.createCellNoPadding(""); };
-        console.log(jobs);
         if(jobs.length == 1) {
             const qtyGood = jobs[0].GoodPieces;
             const qtyNeeded = jobs[0].PiecesNeeded;
@@ -172,29 +181,25 @@ class MachineRowHTML {
         return cell;
     }
 
-    createEndResourceHTML(jobs) {
+    createEndResourceHTML(jobs, department, resource) {
         let cell = document.createElement('td');
         cell.classList.add("cell");
-        cell.appendChild(this.createButton("End<br>Resource", "btnOperationEndResource"));
+        cell.appendChild(this.createButton("End<br>Resource", "btnOperationEndResource", undefined, undefined, () => removeMachine(department, resource)));
         return cell;
     }
 
-    createButton(text, className, disabled = false, backgroundColor = undefined) {
-        let button = document.createElement('button');
-        button.className = className;
-        button.disabled = disabled;
-        button.innerHTML = text;
-        if(backgroundColor !== undefined && disabled === false) {
-            button.style.backgroundColor = backgroundColor;
-        }
-        return button;
-    }
     constructor(machine) {
 
         const container = document.createElement('tr');
         // container.classList.add("row");
         if(machine.department == undefined || machine.resource == undefined) {
-            container.appendChild(this.createCell("+"));
+            const inputButtonFunction = () => {
+                const value = document.querySelector("#input #InputText").value;
+                const [dept, res] = value.split(" ");
+                setMachine(dept, res);
+            }
+            const func = () => { displayInput("Add Resource", inputButtonFunction, "Add"); }
+            container.appendChild(this.createCell("+", undefined, func));
             container.appendChild(this.createCellNoPadding(""));
             container.appendChild(this.createCellNoPadding(""));
             container.appendChild(this.createCellNoPadding(""));
@@ -212,7 +217,7 @@ class MachineRowHTML {
             const status = this.createStatusHTML(machine.status);
             const changeStatus = this.createChangeStatusHTML(machine.status, machine.jobs);
             const reportPieces = this.createReportPiecesHTML(machine.jobs);
-            const endResource = this.createEndResourceHTML();
+            const endResource = this.createEndResourceHTML(machine.jobs, machine.department, machine.resource);
             container.appendChild(resourceName);
             container.appendChild(jobs);
             container.appendChild(parts);
@@ -232,7 +237,7 @@ class MachineRowHTML {
         cell.innerHTML = content;
         return cell;
     }
-    createCell(content, backgroundColor) {
+    createCell(content, backgroundColor, onclickFunc = null) {
         let cell = document.createElement('td');
         cell.classList.add("cell");
         let textDiv = document.createElement('div');
@@ -241,8 +246,24 @@ class MachineRowHTML {
         if(backgroundColor !== undefined) {
             textDiv.style.backgroundColor = backgroundColor;
         }
+        if(onclickFunc != null) {
+            cell.onclick = onclickFunc;
+        }
         cell.appendChild(textDiv);
         return cell;
+    }
+    createButton(text, className, disabled = false, backgroundColor = undefined, onclickFunc = null) {
+        let button = document.createElement('button');
+        button.className = className;
+        button.disabled = disabled;
+        button.innerHTML = text;
+        if(backgroundColor !== undefined && disabled === false) {
+            button.style.backgroundColor = backgroundColor;
+        }
+        if(onclickFunc != null) {
+            button.onclick = onclickFunc;
+        }
+        return button;
     }
 }
 
