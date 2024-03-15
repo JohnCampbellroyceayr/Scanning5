@@ -1,0 +1,102 @@
+#job-dashboard {
+    font-size: 25px;
+    display: none;
+}
+
+#job-dashboard div {
+    padding: 10px;
+}
+
+#job-dashboard input, p {
+    min-width: 100px;
+    padding: 0px;
+    font-size: 25px;
+    margin-left: 15px;
+    margin-right: 15px;
+    display: inline-block;
+}
+
+#job-dashboard button {
+    padding: 10px;
+    background-color: #3f96be;
+    font-size: 20px;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: -2px;
+}
+
+#job-dashboard h2 {
+    text-align: center;
+}
+
+#WorkOrderDetails {
+    table-layout: auto;
+    width: 100%;
+    border-collapse: collapse;
+    background-color: black;
+}
+
+#WorkOrderDetails td {
+    width: auto;
+}
+
+#WorkOrderDetails tr td {
+    color: white;
+    text-align: center;
+    border: 2px solid white;
+}
+
+#joblist {
+    table-layout: auto;
+    width: 100%;
+    border-collapse: collapse;
+    background-color: black;
+}
+
+#joblist td {
+    width: auto;
+}
+
+#joblist tr td {
+    color: white;
+    text-align: center;
+    border: 2px solid white;
+}
+
+#job-dashboard-description {
+    display: inline-block;
+    text-align: left;
+}
+
+#ResourceBanner-text {
+    display: inline-block;
+    vertical-align: top;
+}
+
+#ResourceBanner {
+    text-align: center;
+}
+
+
+#job-dashboard #backToDashBoardBtn {
+    background-color: orange;
+    vertical-align: top;
+    float: right;
+}
+
+#employeeGreeting-jobDashboard {
+    display: inline;
+}
+
+#job-dashboard #name-container-jobDashboard {
+    float: right;
+}
+
+#job-dashboard #name-container-jobDashboard #name {
+    color: black;
+}
+
+#job-dashboard #findSeqInfo {
+    padding: 5px;
+}

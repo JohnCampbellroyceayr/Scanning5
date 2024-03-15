@@ -18,8 +18,14 @@ export default function validParams(reqBody, type) {
             return checkParams(reqBody, ["dept", "resource", "job"]);
         case "checkCurrentJob":
             return checkParams(reqBody, ["dept", "resource", "job", "seq"]);
+        case "getJobRouting":
+            return checkParams(reqBody, ["dept", "resource", "jobNumber"]);
+        case "getMachineValues":
+            return checkParams(reqBody, ["dept", "resource"]);
         case "getMachineJobs":
             return checkParams(reqBody, ["dept", "resource"]);
+        case "addJob":
+            return checkParams(reqBody, ["job", "seq", "dept", "resource", "employee"]);
         case "setup":
             return checkParams(reqBody, ["jobs", "dept", "resource", "employee"]);
         case "run":

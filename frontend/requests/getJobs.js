@@ -32,7 +32,8 @@ async function getAllJobs(jobs) {
         return jobs;
     }
     const url = 'http://192.168.0.19:2002/api/checkJob';
-    const jobStr = getJobsDisplayString(jobs);
+    const jobStr = "Hello";
+    // const jobStr = getJobsDisplayString(jobs);
     const job = prompt("Current jobs: " + jobStr + "Enter Job", "");
     
     if(job == undefined || job == '') {

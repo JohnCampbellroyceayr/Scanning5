@@ -1,6 +1,6 @@
 import ODBC from "../../../databases/odbc.js";
 
-export default async function getMulitiJobMachine(dept, resource) {
+export default async function getMultiJobMachine(dept, resource) {
 
     const deptWithPlantCode = 'DFT' + dept;
     const machine = deptWithPlantCode + resource;
@@ -14,11 +14,13 @@ export default async function getMulitiJobMachine(dept, resource) {
                 resolve("N");
                 console.log(error);
             }
-            if(result.length > 0 && result[0]["MFRESP"].includes("Y")) {
-                resolve("Y");
-            }
             else {
-                resolve("N");
+                if(result.length > 0 && result[0]["MFRESP"].includes("Y")) {
+                    resolve("Y");
+                }
+                else {
+                    resolve("N");
+                }
             }
         });
     });

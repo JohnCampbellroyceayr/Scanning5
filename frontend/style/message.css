@@ -1,5 +1,5 @@
 #backscreen {
-    position: absolute;
+    position: fixed;
     width: 100vw;
     height: 100vh;
     top: 0;
@@ -11,7 +11,7 @@
 #message {
     width: 500px;
     height: 300px;
-    position: absolute;
+    position: fixed;
     top: calc(50vh - (300px / 2));
     left: calc(50vw - (500px / 2));
     background-color: white;

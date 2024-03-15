@@ -1,6 +1,11 @@
-function displayMessage(messageObj, btnFunction, text) {
+function displayMessage(messageObj, btnFunction = "default", text = "OK") {
     const title = getTitle(messageObj);
-    openMessage(title, messageObj.message, btnFunction, text);
+    if(btnFunction == "default") {
+        openMessage(title, messageObj.message, () => closeMessage(), text);
+    }
+    else {
+        openMessage(title, messageObj.message, btnFunction, text);
+    }
 }
 
 function openMessage(title, message, btnFunction, btnText) {
@@ -19,6 +24,9 @@ function closeMessage() {
 }
 
 function getTitle(messageObj) {
+    if(messageObj.type == "confirm") {
+        return "Confirm";
+    }
     if(messageObj.success == true) {
         return "Operation Successful";
     }

@@ -88,17 +88,20 @@ function addEmployeeNumberToArray(employeeNumber, employeeName, arr) {
 
 
 function prepareDashboard() {
+    document.querySelector("#employeeUserNameInput").value = "";
+    document.querySelector("#nameOfPotentialSignIn").innerHTML = "";
+    document.querySelector("#passwordFieldLoginManual").style.display = "none";
+
     document.querySelector("#loginManual").style.display = "none";
     document.querySelector("#dashboard").style.display = "block";
 }
 
 function loadLoginManual() {
-    document.querySelector("#login").style.display = "none";
     document.querySelector("#loginManual").style.display = "block";
-    prepareLoginManualLoadRecentResources();
+    prepareLoginManualLoadRecentEmployeees();
 }
 
-async function prepareLoginManualLoadRecentResources() {
+async function prepareLoginManualLoadRecentEmployeees() {
 
     const recentEmployeesString = localStorage.getItem("recentEmployees");
     let recentEmployeesArray = JSON.parse(recentEmployeesString);
@@ -129,3 +132,5 @@ async function prepareLoginManualLoadRecentResources() {
     }
 
 }
+
+loadLoginManual();

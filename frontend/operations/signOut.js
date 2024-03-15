@@ -13,5 +13,5 @@ async function switchBackToLogin() {
     document.querySelector("#loginManual").style.display = "block";
     EmployeeObj = {}
     MachineObj = {}
-    prepareLoginManualLoadRecentResources();
+    prepareLoginManualLoadRecentEmployeees();
 }

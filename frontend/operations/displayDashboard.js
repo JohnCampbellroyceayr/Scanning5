@@ -1,6 +1,7 @@
 async function updateDashBoard(employeeNumber) {
     const dashboard = await getDashBoardFromServer(employeeNumber);
     setEndShiftBtn(employeeNumber)
+    console.log(dashboard);
     setEmployeeGreeting(dashboard);
     createActiveResourceHTML(dashboard);
     createRecentResourcesHTML(dashboard);
@@ -63,11 +64,12 @@ function createActiveResourceHTML(dashboardObj) {
     container.innerHTML = "";
 
     const machines = dashboardObj.machines;
+    const employee = dashboardObj.employee;
     const tableHeader = new MachineHeaderHTML();
     container.appendChild(tableHeader);
 
     machines.forEach(function(machine) {
-        const machineRow = new MachineRowHTML(machine);
+        const machineRow = new MachineRowHTML(machine, employee[0]);
         container.appendChild(machineRow);
     });
 
@@ -108,13 +110,13 @@ class MachineRowHTML {
         const text = `${dept} ${res}`;
         return this.createCell(text);
     }
-    createJobHTML(jobs) {
-        if(jobs == null || jobs.length == 0) {return this.createCell("+"); };
+    createJobHTML(jobs, dept, resource, employeeName) {
+        if(jobs == null || jobs.length == 0) {return this.createCell("+", undefined, () => { loadAddJobsMenu(dept, resource, employeeName) }); };
         if(jobs.length == 1) {
-            return this.createCellNoPadding(jobs[0].Job);
+            return this.createCellNoPadding(jobs[0].Job, () => { loadAddJobsMenu(dept, resource, employeeName) });
         }
         else {
-            return this.createCell("Group");
+            return this.createCell("Group", undefined, () => { loadAddJobsMenu(dept, resource, employeeName) });
         }
     }
     createPartHTML(jobs) {
@@ -188,7 +190,7 @@ class MachineRowHTML {
         return cell;
     }
 
-    constructor(machine) {
+    constructor(machine, employee) {
 
         const container = document.createElement('tr');
         // container.classList.add("row");
@@ -211,7 +213,7 @@ class MachineRowHTML {
         }
         else {
             const resourceName = this.createResourceNameHTML(machine.department, machine.resource);
-            const jobs = this.createJobHTML(machine.jobs);
+            const jobs = this.createJobHTML(machine.jobs, machine.department, machine.resource, employee.name);
             const parts = this.createPartHTML(machine.jobs);
             const qty = this.createQtysHTML(machine.jobs);
             const status = this.createStatusHTML(machine.status);
@@ -231,10 +233,13 @@ class MachineRowHTML {
         }
 
     }
-    createCellNoPadding(content) {
+    createCellNoPadding(content, onclickFunc = null) {
         let cell = document.createElement('td');
         cell.className = "cell";
         cell.innerHTML = content;
+        if(onclickFunc != null) {
+            cell.onclick = onclickFunc;
+        }
         return cell;
     }
     createCell(content, backgroundColor, onclickFunc = null) {
@@ -275,8 +280,12 @@ function createMachineRow(machine) {
     return div;
 }
 
-function createResourceNameHTML(name) {
-
+function loadAddJobsMenu(dept, resource, employeeName) {
+    document.querySelector("#job-dashboard").style.display = "block";
+    document.querySelector("#dashboard").style.display = "none";
+    loadJobMenuForResource(dept, resource, employeeName);
 }
+
+
 
 updateDashBoard("02410");

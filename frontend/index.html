@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="/frontend/style/message.css">
 <link rel="stylesheet" href="/frontend/style/input.css">
 <link rel="stylesheet" href="/frontend/style/dashboard.css">
+<link rel="stylesheet" href="/frontend/style/job-dashboard.css">
 <body>
     <div id="content">
         <div class="logo">
@@ -82,6 +83,48 @@
             </table>
         </div>
 
+        <div id="job-dashboard">
+            <div id="employeeGreeting-jobDashboard">
+                <div id="name-container-jobDashboard">
+                    <div id="name">
+        
+                    </div>
+                </div>
+            </div>
+            <br>
+            <br>
+            <br>
+            <div id="ResourceBanner">
+                <div id="ResourceBanner-text">Resource:</div>
+                <div id="job-dashboard-description"></div>
+                <button id="backToDashBoardBtn" onclick="backToDashboardJobMenu()">Back To Dashboard</button>
+            </div>
+            <div>
+                Enter Job #:<input type="text" id="job-dashboardJobNumber"><button id="findSeqInfo" onclick="loadSeqInfoBasedOnOrderNumber()">Find</button>
+                Part #:<p id="job-dashboardPartNumber"></p>
+                <button onclick="addToJobList()">
+                    + ADD TO 
+                    JOB LIST
+                </button>
+            </div>
+            <div>
+                Enter Seq #:<input type="text" id="job-dashboardSeqNumber">
+                <p id="job-dashboardSeqDescription"></p>
+            </div>
+            <div>
+                <h2>W/O DETAILS</h2>
+                <table id="WorkOrderDetails">
+
+                </table>
+            </div>
+            <div>
+                <h2>JOB LIST</h2>
+                <table id="joblist">
+
+                </table>
+            </div>
+        </div>
+
 
     </div>
     <div id="backscreen" onclick="closeMessage()">
@@ -112,7 +155,7 @@
 
 <script>
     let EmployeeObj = {
-        number: "02410"
+
     }
     let MachineObj = {
 
@@ -143,6 +186,7 @@
 <script src="operations/getGoodScrapJobs.js"></script>
 
 <script src="operations/displayDashboard.js"></script>
+<script src="operations/displayJobDashboard.js"></script>
 
 <script>
 

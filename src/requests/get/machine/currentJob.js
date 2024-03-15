@@ -1,4 +1,5 @@
 import ODBC from "../../../databases/odbc.js";
+import getGroup from "./getMachineGroup.js";
 
 export default async function getCurrentJob(dep, res, job, seq) {
 
@@ -106,31 +107,6 @@ async function getTotalCompletedNotes(workOrder, machineStr) {
     });
 }
 
-function getGroup(departmentWithPlantCode, res) {
-    const query = `
-        SELECT TRIM(ABMACG) AS "Machine Group" FROM RESRE WHERE ABDEPT = ? AND ABRESC = ?
-    `;
-    return new Promise(async (resolve, reject) => {
-        ODBC.query(query, [departmentWithPlantCode, res], async (error, result) => {
-            if(error) {
-                console.log(error);
-                resolve(undefined);
-            }
-            else {
-                if(result.length > 0) {
-                    if(result[0]["Machine Group"] !== undefined) {
-                        if(result[0]["Machine Group"] !== '') {
-                            resolve(result[0]["Machine Group"]);
-                            return ;
-                        }
-                    }
-                }
-                resolve(undefined);
-            }
-        });
-    });
-}
-
 const noGroupQuery = `
     SELECT 
         TRIM(CJOBDR.EDJOB#) AS "Job",
@@ -141,7 +117,9 @@ const noGroupQuery = `
         CJOBDR.EDSTAT AS "Sequence Status",
         TRIM(CJOBH.DNPART) AS "PartNumber",
         TRIM(CJOBDR.EDDEPT) AS "Dept",
-        TRIM(CJOBDR.EDRESC) AS "Res"
+        TRIM(CJOBDR.EDRESC) AS "Res",
+        CJOBDR.EDOPNM AS "Operation Code",
+        TRIM(RESRE.ABDES) AS "Op Description"
     FROM
         CJOBDR
     LEFT JOIN 
@@ -162,7 +140,9 @@ const groupQuery = `
         CJOBDR.EDCOMQ AS "GoodPieces",
         CJOBDR.EDSTAT AS "Sequence Status",
         TRIM(CJOBH.DNPART) AS "PartNumber",
-        TRIM(RESRE.ABMACG) AS "Machine Group"
+        TRIM(RESRE.ABMACG) AS "Machine Group",
+        CJOBDR.EDOPNM AS "Operation Code",
+        TRIM(RESRE.ABDES) AS "Op Description"
     FROM 
         CJOBDR
     LEFT JOIN 

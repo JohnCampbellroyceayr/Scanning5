@@ -28,7 +28,7 @@ import getMachineJobs from "./src/requests/get/machine/getMachineJobs.js";
 import getCurrentUser from "./src/requests/get/user/getCurrentUser.js";
 import getCurrentJob from "./src/requests/get/machine/currentJob.js";
 import getJob from "./src/requests/get/machine/job.js";
-import getMulitiJobMachine from "./src/requests/get/machine/machineMultiJob.js";
+import getMultiJobMachine from "./src/requests/get/machine/machineMultiJob.js";
 import machineExists from "./src/requests/get/machine/machineExists.js";
 
 import removeJob from "./src/requests/post/machine/removeJob.js";
@@ -41,6 +41,9 @@ import getDashboard from "./src/requests/get/dashboard/dashboard.js";
 
 const app = express();
 import cors from 'cors';
+import getCurrentJobRouting from "./src/requests/get/machine/getJobRouting.js";
+import addJob from "./src/requests/post/machine/addJob.js";
+import getMachineDescription from "./src/requests/get/machine/getMachineDescription.js";
 
 app.use(cors());
 app.use(express.json());
@@ -82,6 +85,30 @@ app.post('/api/checkCurrentJob', async (req, res) => {
     const jobValues = await getCurrentJob(dept, resource, job, seq);
 
     res.json(jobValues);
+});
+
+app.post('/api/getJobRouting', async (req, res) => {
+
+    if(!validParams(req.body, "getJobRouting")) { res.json(newMessage("Invalid Params", false, true)); return ; }
+    const jobNumber = req.body.jobNumber;
+    const dept = req.body.dept;
+    const resource = req.body.resource;
+    
+    try {
+        const jobRouting = await getCurrentJobRouting(jobNumber, dept, resource);
+        res.json(jobRouting);
+    }
+    catch(error) {
+        console.log(error);
+        res.json({
+            header: {
+                recommendedSeq: "none",
+                recommendedSeqDescription: "W/O not found",
+                partNumber: "W/O not found",
+            },
+            routing: []
+        });
+    }
 });
 
 
@@ -169,6 +196,29 @@ app.post('/api/employeeLogin', async (req, res) => {
     }
 });
 
+app.post('/api/getMachineValues', async (req, res) => {
+
+    if(!validParams(req.body, "getMachineValues")) { res.json(newMessage("Invalid Params", false, true)); return ; }
+    
+    const dept = req.body.dept;
+    const resource = req.body.resource;
+
+    try {
+        const multiJobMachine = await getMultiJobMachine(dept, resource);
+        const description = await getMachineDescription(dept, resource);
+        res.json({
+            multiJobMachine: multiJobMachine,
+            description: description
+        });
+    }
+    catch(error) {
+        res.json({
+            multiJobMachine: null,
+            description: null
+        });
+    }
+});
+
 app.post('/api/setMachine', async (req, res) => {
 
     if(!validParams(req.body, "setMachine")) { res.json(newMessage("Invalid Params", false, true)); return ; }
@@ -196,11 +246,43 @@ app.post('/api/setMachine', async (req, res) => {
         }
         else {
             const message = `Successfully set ${dept} ${resource}`;
-            const mulitiJobMachine = await getMulitiJobMachine(dept, resource);
+            const mulitiJobMachine = await getMultiJobMachine(dept, resource);
             console.log(mulitiJobMachine);
             res.json(newMessage(message, true, false, { "mulitiJobMachine": mulitiJobMachine }));
         }
     }
+});
+
+app.post('/api/addJob', async (req, res) => {
+
+    if(!validParams(req.body, "addJob")) { res.json(newMessage("Invalid Params", false, true)); return ; }
+
+    const employee = req.body.employee;
+    const dept = req.body.dept;
+    const resource = req.body.resource;
+    const jobNumber = req.body.job;
+    const seq = req.body.seq;
+
+    try {
+        const jobObj = await getCurrentJob(dept, resource, jobNumber, seq);
+        const result = await addJob(employee, dept, resource, jobObj);
+
+        if(result.error) {
+            res.json(newMessage("An Error occured " + result.error, false, true));
+        }
+        else {
+            const message = `Successfully added work orders on ${dept} ${resource}`;
+            res.json(newMessage(message));
+        }
+    }
+    catch(error) {
+        if(error) {
+            res.json(newMessage("Failed to add work order to resource", false, true));
+        }
+    }
+
+
+
 });
 
 
